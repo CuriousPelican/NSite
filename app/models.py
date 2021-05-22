@@ -1,15 +1,12 @@
-from datetime import date  #, timedelta
+from datetime import date
 from flask_login import UserMixin
 from app import db
 
-
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer,primary_key=True)  # primary keys are required by SQLAlchemy
+    id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
-    userID = db.Column(db.Integer)
-
 
 class Messages(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -17,7 +14,6 @@ class Messages(db.Model):
     auteur = db.Column('auteur', db.String(100))
     contenu = db.Column('contenu', db.String(1000))
     messageId = db.Column('messageId', db.Integer)
-
 
 class FeedItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

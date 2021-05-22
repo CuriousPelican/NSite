@@ -2,10 +2,9 @@
 
 {% block content %}
   <div id="tout">
-    <div style="display:none;"><button onclick="demandeHistorique()">Afficher les anciens messages</button><input type="number" value="50" id="nbHistorique" /></div>
     <div id="name" style="display:none;">{{ name }}</div>
     <div id="id" style="display:none;">{{ id }}</div>
-    <div id="chat">
+    <div id="chat" onscroll="boutonHistorique()">
       <form id="envoiMsg">
           <input type="text" id="m" placeholder="Entrez ici votre message" />
           <input type="submit" id="submitButton" value="envoyer" />
@@ -107,9 +106,13 @@
     text-align: center;
     display: block;
     font-size: 1.8em;
+    line-height: 100%;
     height: 100%;
     width: 100%;
     color: white;
+  }
+  #uploadBouton::after:hover {
+    font-size: 2em;
   }
  .button:hover {
     cursor: grab;
@@ -155,6 +158,12 @@
   #historique {
     border-bottom: 1px dashed black;
     padding-bottom: 2em;
+  }
+  .image {
+    width: 100%;
+  }
+  .image > img {
+    width: 100%;
   }
   #Mps {
     position: absolute;
@@ -302,8 +311,12 @@
     text-align: right;
   }
   .message {
+    max-width: 100%;
     font-size: 1.1em;
     font-family: 'Times New Roman', Times, serif;
+  }
+  .yourMp, .myMp, .message {
+    white-space: pre-line;
   }
   .participant {
     flex-direction: row-reverse;
@@ -317,6 +330,52 @@
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  .participants {
+    display: flex;
+  }
+  .participant::after {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .6em;
+    color: white;
+    width: 1.2em;
+    height: 1.2em;
+    transform: translate(60%, 0);
+    background-color: red;
+    border-radius: 50%;
+  }
+  ._1::after {
+    content: '1';
+  }
+  ._2::after {
+    content: '2';
+  }
+  ._3::after {
+    content: '3';
+  }
+  ._4::after {
+    content: '4';
+  }
+  ._5::after {
+    content: '5';
+  }
+  ._6::after {
+    content: '6';
+  }
+  ._7::after {
+    content: '7';
+  }
+  ._8::after {
+    content: '8';
+  }
+  ._9::after {
+    content: '9';
+  }
+  ._10::after {
+    content: '9+';
   }
   #colonne {
     width: 20%;
@@ -348,6 +407,7 @@
     content:" ";
   }
   a {
+    display: block;
     color: white;
     text-decoration-style: dotted;
   }
@@ -381,6 +441,12 @@
   var MpEnCours = "none";
   var nomMpEnCours = -1;
 
+  function boutonHistorique() {
+    if (document.getElementById("chat").scrollTop == 0) {
+      demandeHistorique(20);
+    }
+  }
+  
   /* gérer l'effet de blur et la petite fenêtre qui s'affiche au milieu*/
   ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false)
@@ -439,9 +505,9 @@ let myID = document.getElementById("id").textContent;
 let premierMessageId = -555;
 
   socket.on('connect', function() {
+    demandeHistorique(30);
     socket.emit("NewConnection");
     console.log("hihi j'ai envoyé la demande de connection")
-    console.log('connected');
   });
 
   socket.on('disconnect', function () {
@@ -449,10 +515,10 @@ let premierMessageId = -555;
     //location.reload();
   });
 
-  function demandeHistorique() {
+  function demandeHistorique(number) {
     console.log('historique demandé')
     socket.emit("historique", {"id" : premierMessageId,
-    "nombre" : (document.getElementById("nbHistorique").value)});
+    "nombre" : number});
   }
 
   function ouvrirMp(id, name) {
@@ -462,9 +528,10 @@ let premierMessageId = -555;
       const div = document.createElement("div");
       div.className = "Mps";
       div.id = "Mp" + id;
+      div.dataset.newMessages = 0;
       const ul = document.createElement("ul");
       const h1 = document.createElement("h1");
-      h1.innerHTML = "<-- " + name;
+      h1.textContent = "<-- " + name;
       h1.setAttribute('onclick','fermerMp("'+id+'")');
       div.appendChild(h1);
       div.appendChild(ul);
@@ -482,6 +549,8 @@ let premierMessageId = -555;
     });
     MpEnCours = id;
     nomMpEnCours = name;
+    element.dataset.newMessages = 0;
+    document.getElementById(id).className = "participant";
   } 
 
   function fermerMp(id) {
@@ -513,17 +582,17 @@ let premierMessageId = -555;
         if (!(document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.className == "myMp"))) {
           const li = document.createElement("li");
           const p = document.createElement("p");
-          p.innerHTML = document.getElementById("inputMp").value;
+          p.textContent = document.getElementById("inputMp").value;
           const h4 = document.createElement("h4");
-          h4.innerHTML = myName;
+          h4.textContent = myName;
           li.appendChild(h4);
           li.appendChild(p);
           li.className = "myMp";
           document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].appendChild(li);
         } else {
-          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].innerHTML += '<br>' + document.getElementById("inputMp").value;
+          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].textContent += '\r\n' + document.getElementById("inputMp").value;
         }
-        var element = document.getElementById("Mp" + MpEnCours);
+        var element = document.getElementById("Mp" + MpEnCours).querySelector("ul");
         element.scrollTo(0, element.scrollHeight);
         document.getElementById("inputMp").value = "";
         event.preventDefault();
@@ -556,37 +625,106 @@ let premierMessageId = -555;
     updateUserslist(users);
   });
 
-  socket.on('lien fichier', (data) => {
-    console.log(data);
-    let authorClass = "";
-    let divClass = "";
-    if (data.auteurId == myID) {
-      authorClass = "me";
-      divClass = "myDiv";
-    } else {
-      authorClass = "you";
-      divClass = "yourDiv";
-    }
+  socket.on("new user", (user) => {
+    console.log('a new user entered the chat');
+    let participant = document.createElement("li");
+      participant.className = "participant";
+      participant.id = user.id;
+      if (user.name != myName) {
+        participant.setAttribute('onclick','ouvrirMp("' + user.id + '", "' + user.name + '")');
+      }
+      participant.textContent = user.name;
+      if (document.getElementById("Mp" + user.id) && document.getElementById("Mp" + user.id).dataset.newMessages != 0) {
+        if (document.getElementById("Mp" + user.id).dataset.newMessages < 10) {
+          participant.className += " _" + document.getElementById("Mp" + user.id).dataset.newMessages;
+        } else {
+          participant.className += " _10";
+        }
+      }
+      document.getElementById("participants").appendChild(participant);
 
-    const div = document.createElement("div");
-    div.className = divClass;
-    const li = document.createElement("li");
-    li.className = authorClass;
-    /*const p = document.createElement("p");
-    p.className = "time";
-    p.innerText = moment().format("hh:mm");*/
-    div.innerHTML =
-    '<p class="' +
-    authorClass +
-    '">' +
-    data.auteur +
-    "</p>" +
-    '<a class="message" href="' + data.lien + '"> ' +
-    data.nomFichier +
-    "</a>";
-    li.appendChild(div);
-    document.getElementById("messages").appendChild(li);
-      
+  });
+
+  socket.on("user left", (user) => {
+    if (user.id == myID) {
+      socket.emit("NewConnection")
+      console.log("demande de reconnection...")
+    }
+    document.getElementById(user.id).remove();
+  })
+
+  socket.on('file link', (data) => {
+    console.log('new file', data)
+    if (data.filetype == 2) {
+      let authorClass = "";
+      let divClass = "";
+      if (data.authorId == myID) {
+        authorClass = "me";
+        divClass = "myDiv";
+      } else {
+        authorClass = "you";
+        divClass = "yourDiv";
+      }
+
+      const div = document.createElement("div");
+      div.className = divClass;
+      const li = document.createElement("li");
+      li.className = authorClass;
+      /*const p = document.createElement("p");
+      p.className = "time";
+      p.innerText = moment().format("hh:mm");*/
+      let p = document.createElement("p");
+      p.className = authorClass;
+      p.textContent = data.author;
+      let a = document.createElement("a");
+      a.className = "message";
+      a.href = data.link;
+      a.textContent = data.filename;
+      div.appendChild(p);
+      div.appendChild(a);
+      li.appendChild(div);
+      document.getElementById("messages").appendChild(li);
+    } else {
+      let authorClass = "";
+      let divClass = "";
+      if (data.authorId == myID) {
+        authorClass = "me";
+        divClass = "myDiv";
+      } else {
+        authorClass = "you";
+        divClass = "yourDiv";
+      }
+      console.log('1')
+      const div = document.createElement("div");
+      div.className = divClass;
+      div.style.display = "flex";
+      div.style.flexWrap = "wrap";
+      const li = document.createElement("li");
+      li.className = authorClass;
+      /*const p = document.createElement("p");
+      p.className = "time";
+      p.innerText = moment().format("hh:mm");*/
+      let p = document.createElement("p");
+      p.className = authorClass;
+      p.textContent = data.author;
+      p.style.width = "100%";
+      if (data.authorId == myID) {
+        p.style.textAlign = "right";
+      } else {
+        p.style.textAlign = "left";
+      }
+      let a = document.createElement("a");
+      a.href = data.link;
+      a.className = "image";
+      let img = document.createElement("img");
+      img.src = "/static/" + data.filename;
+      div.appendChild(p);
+      a.appendChild(img)
+      div.appendChild(a);
+      li.appendChild(div);
+      document.getElementById("messages").appendChild(li);
+      }
+
     //scroll to the bottom
     var element = document.getElementById("chat")
     element.scrollTo(0, element.scrollHeight);
@@ -594,15 +732,15 @@ let premierMessageId = -555;
 
   socket.on('message', function(data) {
     console.log("message reçu : ", data);
-    if (data.userID == lastUserID) {
+    if (data.authorId == lastUserID) {
       concatenateMessage(data);
     }
     else {
       displayNewMessage(data);
     }
-    lastUserID = data.userID;
+    lastUserID = data.authorId;
     if (premierMessageId == -555) {
-      premierMessageId = data.messageId;
+      premierMessageId = data.id;
     }
   });
 
@@ -613,9 +751,10 @@ let premierMessageId = -555;
       const div = document.createElement("div");
       div.className = "Mps";
       div.id = "Mp" + data.userID;
+      div.dataset.newMessages = 0;
       const ul = document.createElement("ul");
       const h1 = document.createElement("h1");
-      h1.innerHTML = "<-- " + data.user;
+      h1.textContent = "<-- " + data.user;
       h1.setAttribute('onclick','fermerMp("'+data.userID+'")');
       div.appendChild(h1);
       div.appendChild(ul);
@@ -624,22 +763,29 @@ let premierMessageId = -555;
     if (!(document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.className == "yourMp"))) {
       const li = document.createElement("li");
       const p = document.createElement("p");
-      p.innerHTML = data.content;
+      p.textContent = data.content;
       const h4 = document.createElement("h4");
-      h4.innerHTML = data.user;
+      h4.textContent = data.user;
       li.appendChild(h4);
       li.appendChild(p);
       li.className = "yourMp";
       document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].appendChild(li);
     } else {
-      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].innerHTML += '<br>' + data.content;
+      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].textContent += '\r\n' + data.content;
     }
-  })
+    if (MpEnCours != data.userID) {
+      let newMessages = parseInt(document.getElementById("Mp" + data.userID).dataset.newMessages) + 1
+      document.getElementById("Mp" + data.userID).dataset.newMessages = newMessages
+      if (newMessages < 11) {
+        document.getElementById(data.userID).className = "participant _" + newMessages;
+      }
+    }
+  });
 
   function displayNewMessage(data) {
     let authorClass = "";
     let divClass = "";
-    if (data.userID == myID) {
+    if (data.authorId == myID) {
       authorClass = "me";
       divClass = "myDiv";
     } else {
@@ -654,28 +800,32 @@ let premierMessageId = -555;
     /*const p = document.createElement("p");
     p.className = "time";
     p.innerText = moment().format("hh:mm");*/
-    div.innerHTML =
-    '<p class="' +
-    authorClass +
-    '">' +
-    data.user +
-    "</p>" +
-    '<p class="message"> ' +
-    data.content +
-    "</p>";
+    let p1 = document.createElement("p");
+    p1.className = authorClass;
+    p1.textContent = data.author;
+    let p2 = document.createElement("p");
+    p2.className = "message";
+    p2.textContent = data.content;
+    div.appendChild(p1);
+    div.appendChild(p2);
     li.appendChild(div);
     document.getElementById("messages").appendChild(li);
-      
     //scroll to the bottom
     var element = document.getElementById("chat")
-    element.scrollTo(0, element.scrollHeight);
+    console.log('je teste si onest tt en bas', Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight)
+    if (Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight < 100) {
+      element.scrollTop = element.scrollHeight;
+    }
   }
 
   function concatenateMessage(data) {
     let message = document.getElementById("messages").lastElementChild.getElementsByClassName("message")[0];
-    message.innerHTML += '<br>' + data.content;
+    message.textContent += "\r\n" + data.content;
     var element = document.getElementById("chat");
-    element.scrollTo(0, element.scrollHeight);
+    console.log('je teste si onest tt en bas', Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight)
+    if (Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight < 50) {
+      element.scrollTop = element.scrollHeight;
+    }
   }   
 
   function updateUserslist(list) {
@@ -694,19 +844,22 @@ let premierMessageId = -555;
       if (list.names[j] != myName) {
         participant.setAttribute('onclick','ouvrirMp("'+list.IDs[j]+'", "'+list.names[j]+'")');
 
+      } else {
+        participant.className += " moi";
       }
-      participant.innerHTML = list.names[j];
+      participant.textContent = list.names[j];
       document.getElementById("participants").appendChild(participant);
   }
   }
       
   function afficherHistorique(messages) {
+    let position = document.getElementById("chat").scrollHeight - document.getElementById("chat").scrollTop
     for (let i = 0; i < messages.length; i++) {
-      if (messages[i].contenu[0] != "‡") {
-        if (lastAuthorID!=messages[i].auteurId || lastAuthorID==-555) {
+      if (messages[i].messageId == 1) {
+        if (lastAuthorID!=messages[i].authorId || lastAuthorID==-555) {
           let authorClass = "";
           let divClass = "";
-          if (messages[i].auteurId == myID) {
+          if (messages[i].authorId == myID) {
             authorClass = "me";
             divClass = "myDiv";
           } else {
@@ -721,27 +874,27 @@ let premierMessageId = -555;
           /*const p = document.createElement("p");
           p.className = "time";
           p.innerText = moment().format("hh:mm");*/
-          div.innerHTML =
-          '<p class="' +
-          authorClass +
-          '">' +
-          messages[i].auteur +
-          "</p>" +
-          '<p class="message"> ' +
-          messages[i].contenu +
-          "</p>";
+          let p1 = document.createElement("p");
+          p1.className = authorClass;
+          p1.textContent = messages[i].author;
+          let p2 = document.createElement("p");
+          p2.className = "message";
+          p2.textContent = messages[i].content;
+          div.appendChild(p1);
+          div.appendChild(p2);
           li.appendChild(div);
           document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
         } else {
           let message = document.getElementById("historique").firstElementChild.getElementsByClassName("message")[0];
-          let content = message.innerHTML;
-          message.innerHTML = messages[i].contenu + '<br>' + content;
+          let content = message.textContent;
+          message.textContent = messages[i].content + '\r\n' + content;
         }
+        lastAuthorID = messages[i].authorId;
       } else {
-        if (lastAuthorID!=messages[i].auteurId || lastAuthorID==-555) {
+        if (messages[i].messageId == 3) {
           let authorClass = "";
           let divClass = "";
-          if (messages[i].auteurId == myID) {
+          if (messages[i].authorId == myID) {
             authorClass = "me";
             divClass = "myDiv";
           } else {
@@ -751,40 +904,75 @@ let premierMessageId = -555;
 
           const div = document.createElement("div");
           div.className = divClass;
+          div.style.display = "flex";
+          div.style.flexWrap = "wrap";
           const li = document.createElement("li");
           li.className = authorClass;
           /*const p = document.createElement("p");
           p.className = "time";
           p.innerText = moment().format("hh:mm");*/
-          div.innerHTML =
-          '<p class="' +
-          authorClass +
-          '">' +
-          messages[i].auteur +
-          "</p>" +
-          '<a class="message" href="' + "/chat/téléchargements/" + messages[i].contenu.substring(1) + '"> ' +
-          messages[i].contenu.substring(1) +
-          "</p>";
+          let p = document.createElement("p");
+          p.className = authorClass;
+          p.textContent = messages[i].author;
+          p.style.width = "100%";
+          if (messages[i].authorId == myID) {
+            p.style.textAlign = "right";
+          } else {
+            p.style.textAlign = "left";
+          }
+          let a = document.createElement("a");
+          a.href = "/chat/téléchargements/" + messages[i].content;
+          a.className = "image";
+          let img = document.createElement("img");
+          img.src = "/static/" + messages[i].content;
+          div.appendChild(p);
+          a.appendChild(img)
+          div.appendChild(a);
           li.appendChild(div);
           document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+          lastAuthorID = -555;
         } else {
-          let message = document.getElementById("historique").firstElementChild.getElementsByClassName("message")[0];
-          let content = message.innerHTML;
-          message.innerHTML = '<a href="' + "/chat/téléchargements/" + messages[i].contenu.substring(1) + '">' + messages[i].contenu.substring(1) + '</a>' + '<br>' + content;
+          let authorClass = "";
+          let divClass = "";
+          if (messages[i].authorId == myID) {
+            authorClass = "me";
+            divClass = "myDiv";
+          } else {
+            authorClass = "you";
+            divClass = "yourDiv";
+          }
+          
+          const div = document.createElement("div");
+          div.className = divClass;
+          const li = document.createElement("li");
+          li.className = authorClass;
+          /*const p = document.createElement("p");
+          p.className = "time";
+          p.innerText = moment().format("hh:mm");*/
+          let p = document.createElement("p");
+          p.className = authorClass;
+          p.textContent = messages[i].author;
+          let a = document.createElement("a");
+          a.className = "message";
+          a.href = "/chat/téléchargements/" + messages[i].content;
+          a.textContent = messages[i].content;
+          div.appendChild(p);
+          div.appendChild(a);
+          li.appendChild(div);
+          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+          lastAuthorID = -555;
         }
       }
       document.getElementById("historique").style.display = "block";
-      lastAuthorID = messages[i].auteurId;
-      premierMessageId = messages[i].messageId;
+      premierMessageId = messages[i].id;
     }
-      var element = document.getElementById("chat")
-      element.scrollTo(0, element.scrollHeight);
-    }
+    document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight - position;
+  }
 
 
   socket.on("historique", (messages) => {
       afficherHistorique(messages);
   });
 
-  </script>
+</script>
 {% endblock %}

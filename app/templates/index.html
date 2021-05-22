@@ -1,10 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="content">
 <h1 class="title">
   Flask Login Example
 </h1>
 <h2 class="subtitle">
   Easy authentication and authorization in Flask.
 </h2>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+  #content {
+    width: 100%;
+    height: 100%;
+    background-color: #00f29d;
+  }
+  .title {
+    color: white;
+    width: 30%;
+    margin: 0 auto;
+    position: relative;
+    top: 7em;
+    text-align: center;
+  }
+  .subtitle {
+    position: relative;
+    top: 10em;
+    color: white;
+    width: 40%;
+    margin: 0 auto;
+    text-align: center;
+  }
+</style>
 {% endblock %}
