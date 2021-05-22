@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> {{ feeditem.titre }} </h1>
+<p> {{ feeditem.desc }} </p>
+<p> {{ feeditem.creationdate }} </p>
+
+<form method="POST" action="#">
+
+    <div>
+        <label>
+            <input type="radio" name="note" value="1">
+            1
+        </label>
+        <label>
+            <input type="radio" name="note" value="2">
+            2
+        </label>
+        <label>
+            <input type="radio" name="note" value="3">
+            3
+        </label>
+        <label>
+            <input type="radio" name="note" value="4">
+            4
+        </label>
+        <label>
+            <input type="radio" name="note" value="5">
+            5
+        </label>
+    </div>
+
+    <textarea name="comment" placeholder="Eventuelles remarques" cols="200" rows="5"></textarea>
+
+    <button class="button is-block is-info is-large is-fullwidth">Envoyer</button>
+</form>
+
+{% endblock %}

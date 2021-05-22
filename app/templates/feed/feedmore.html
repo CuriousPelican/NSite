@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1> Titre: {{ item.titre }} </h1>
+    <h4> Date de creation: {{ item.creationdate }} </h4>
+    <p> Description: {{ item.desc }} </p>
+    <a href="{{url_for('feed.question', feeditemHash=item.hashedid)}}">Lien</a>
+    {% if item.isopen == false %}
+        <p>Etat: Fermé</p>
+        <a href="{{url_for('feed.openfeeditem', feeditemId=item.id)}}">Ouvrir</a>
+    {% else %}
+        <p>Etat: Ouvert</p>
+        <a href="{{url_for('feed.closefeeditem', feeditemId=item.id)}}">Fermer</a>
+    {% endif %}
+
+    <h1>Statistiques</h1>
+    <img src="{{ filepath+'.piefeeditem.svg' }}" alt="Graphique effectifs notes">
+    <!-- Tableau à afficher à la verticale -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Total</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>Moyenne</th>
+                <th>Médiane</th>
+                <th>Ecart type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ item._1+item._2+item._3+item._4+item._5 }}</td>
+                <td>{{ item._1 }}</td>
+                <td>{{ item._2 }}</td>
+                <td>{{ item._3 }}</td>
+                <td>{{ item._4 }}</td>
+                <td>{{ item._5 }}</td>
+                <td>{{ itemstats["mean"] }}</td>
+                <td>{{ itemstats["med"] }}</td>
+                <td>{{ itemstats["stdev"] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>Commentaires</h1>
+    {% set listcomments = item.comments.split('⸎⸷⫸ʨ5ƐƖƐ␥‡') %}
+    <ul>
+    {% for comment in listcomments %}
+        <li>{{ comment }}</li>
+    {% endfor %}
+    </ul>
+
+    <a href="{{url_for('feed.deletefeeditem', feeditemId=item.id)}}">Supprimer</a>
+
+    <a href="{{url_for('feed.group', groupId=item.groupId)}}"> Retour </a>
+
+{% endblock %}

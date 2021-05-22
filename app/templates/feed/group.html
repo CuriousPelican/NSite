@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1> Groupe: {{ group.name }} </h1>
+
+    <h1>Stats</h1>
+    <img src="{{ filepath+'.meansmeds.svg' }}" alt="Graphique moyennes & médianes">
+    <img src="{{ filepath+'.stdevs.svg' }}" alt="Graphique écarts types">
+    <img src="{{ filepath+'.histscumules.svg' }}" alt="Graphique proportions notes">
+    <img src="{{ filepath+'.effectifsreponses.svg' }}" alt="Graphique nombre réponses">
+
+    <h1>Feedbacks</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Creation</th>
+                <th>Nom</th>
+                <th>Ouvrir/Fermer</th>
+                <th>Supprimer</th>
+                <th>Lien</th>
+                <th>+ d'infos</th>
+                <th></th>
+            </tr>
+        </thead>
+    
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.creationdate }}</td>
+                <td>{{ item.titre }}</td>
+                {% if item.isopen == false %}
+                    <td><a href="{{url_for('feed.openfeeditem', feeditemId=item.id)}}">Ouvrir</a></td>
+                {% else %}
+                    <td><a href="{{url_for('feed.closefeeditem', feeditemId=item.id)}}">Fermer</a></td>
+                {% endif %}
+                <td><a href="{{url_for('feed.deletefeeditem', feeditemId=item.id)}}">Supprimer</a></td>
+                <td><a href="{{url_for('feed.question', feeditemHash=item.hashedid)}}">Click</a></td>
+                <td><a href="{{url_for('feed.feedmore', feeditemId=item.id)}}">Voir +</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{url_for('feed.newfeeditem', groupId=group.id)}}"> Nouveau feedback </a>
+
+    <div>
+        <h2>Supprimer les plus anciens feedbacks</h2>
+        <form method="POST" action="#">
+
+            <div class="field">
+                <div class="control">
+                    <label>
+                        <input class="input is-large" type="number" name="nbquestions" placeholder="0">
+                        Nombre a supprimer
+                    </label>
+                </div>
+            </div>
+    
+            <button class="button is-block is-info is-large is-fullwidth">Supprimer</button>
+        </form>    
+    </div>
+{% endblock %}

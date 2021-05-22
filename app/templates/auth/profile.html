@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title"> Welcome, {{ name }} !</h1>
+
+<div class="box">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<h3 class="title">GooOOoOoar changer de grooor nom</h3>
+<form method="POST" action="#">
+    <div class="field">
+        <div class="control">
+            <input class="input is-large" type="text" value="nouveau nom" name="new_name" placeholder="Your new name" autofocus="">
+        </div>
+    </div>
+    <input type="submit" value="Confirmer" name="change_name" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+</form>
+
+<h3 class="title">GooOOoOoar changer grooor d'email</h3>
+<form method="POST" action="#">
+  <div class="field">
+    <div class="control">
+        <input class="input is-large" type="text" value="nouvel email" name="new_email" placeholder="Your new email" autofocus="">
+    </div>
+</div>
+    <div class="field">
+        <div class="control">
+            <input class="input is-large" type="text" value="mot de passe" name="password" placeholder="password" autofocus="">
+        </div>
+    </div>
+    <input type="submit" value="Confirmer" name="change_email" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+</form>
+
+<h3 class="title">GooOOoOoar changer grooor de mot grompf de passe</h3>
+<form method="POST" action="#">
+    <div class="field">
+        <div class="control">
+            <input class="input is-large" type="text" value="ancien mot de passe" name="old_password" placeholder="Your old password" autofocus="">
+        </div>
+    </div>
+    <div class="field">
+        <div class="control">
+            <input class="input is-large" type="text" value="nouveau mot de passe" name="new_password" placeholder="Your new password" autofocus="">
+        </div>
+    </div>
+    <input type="submit" value="Confirmer" name="change_pass" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+</form>
+
+</div>
+{% endblock %}

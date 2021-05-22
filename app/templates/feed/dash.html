@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="block mt-6">
+    {% for group in groups %}
+    <div class="column is-8 is-offset-2 box">
+    <div class="columns tags">
+        <span class="column is-4"><h3 class="has-text-centered">{{ group.name }}</h3></span>
+        <span class="column is-2"><a class="input" href="{{url_for('feed.newfeeditem', groupId=group.id)}}"> Nouveau feedback </a></span>
+        <span class="column is-2"><a class="input" href="{{url_for('feed.group', groupId=group.id)}}"> Statistiques </a></span>
+        <span class="column is-2"><a class="input" href="{{url_for('feed.deletegroup', groupId=group.id)}}"> Supprimer groupe</a></span>
+    </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="column is-6 is-offset-3">
+    <form method="POST" action="#">
+
+        <div class="field">
+            <div class="control">
+                <input class="input is-large" type="text" name="groupname" placeholder="Nom du groupe" autofocus="">
+            </div>
+        </div>
+
+        <button class="button is-block is-info is-large is-fullwidth">Créer</button>
+    </form>
+</div>
+
+{% endblock %}

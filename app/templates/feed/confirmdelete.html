@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div>
+    <h1>Etes vous sur de vouloir supprimer {{"ce groupe" if group else "cette question"}} ?</h1>
+    <h1> Nom: {{group.name if group else feeditem.titre}} </h1>
+    <p> {{"Description:" if feeditem}} {{feeditem.desc if feeditem}} </p>
+
+    <div>
+        <form action="#" method="post">
+            <input type="submit" value="Non" name="n">
+
+        </form>
+        <form action="#" method="post">
+            <input type="submit" value="Oui" name="y">
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

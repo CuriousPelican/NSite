@@ -1,0 +1,790 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div id="tout">
+    <div style="display:none;"><button onclick="demandeHistorique()">Afficher les anciens messages</button><input type="number" value="50" id="nbHistorique" /></div>
+    <div id="name" style="display:none;">{{ name }}</div>
+    <div id="id" style="display:none;">{{ id }}</div>
+    <div id="chat">
+      <form id="envoiMsg">
+          <input type="text" id="m" placeholder="Entrez ici votre message" />
+          <input type="submit" id="submitButton" value="envoyer" />
+      </form>
+      <ul id="historique" style="display: none;"></ul>
+      <ul id="messages"></ul>
+      <br><br><br><br>
+    </div>
+    <label class="button" id="uploadBouton" for="fileInput"><form method="POST" action="/chat" enctype="multipart/form-data">
+      <input type="file" id="fileInput" accept="image/*, text/*" name="file" >
+      <input type="submit" id="submit">
+    </form></label>
+    <label style="display:none;" class="button" for="submit">huhu</label>
+    
+    
+    <div id="colonne">
+      <div id="infos">
+        <h1 class="titre">Participants :</h1>
+        <ul id="participants">
+          <li class="participant">_jeb</li>
+          <li class="participant">Dinnerbone</li>
+        </ul>
+      </div>
+      <div id="Mps">
+        <form id="envoiMp">
+          <input type="text" id="inputMp" placeholder="hu" />
+          <input type="submit" id="submitMp" value="envoyer" />
+        </form>
+      </div>
+    </div>
+    
+    
+    <div id="uploadMsg"><p>Lâchez pour envoyer votre fichier</p></div>
+  </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+  #tout {
+    margin: 0;
+    overflow-y: hidden;
+  }
+  #tout.highlight > *:not(#uploadMsg) {
+    filter: blur(5px);
+    transition: all .5s ease;
+  }
+  #tout.highlight {
+    cursor: grabbing;
+  }
+  #envoiMsg {
+    margin: 5px 0px;
+    position: fixed;
+    bottom: 1em;
+    left: 5%;
+    width: 70%;
+    font-size: 0.6em;
+  }
+  #m {
+    position: relative;
+    border-radius: 5em;
+    border: 1px solid black;
+    border-style: dashed;
+    background-color: #EEEEEE;
+    transition: background 1s ease;
+    height: 1.8em;
+    padding-left: 1em;
+    width: 100%;
+    font-size: 2em;
+    bottom: .1em;
+  }
+  #m:focus {
+    border: 3px solid #8B2635;
+    transition: background 1s ease;
+    background-color: white;
+    border-radius: 1em;
+    outline: none;
+  }
+  #chat {
+    margin: 0 3% 0 5%;
+    padding-right: 2%;
+    width: 70%;
+    position: fixed;
+    left: 0;
+    height: 80%;
+    overflow-y: auto;
+  }
+  #uploadBouton {
+    position: absolute;
+    bottom: 1.1em;
+    left: 1.1em;
+    width: 1.8em;
+    height: 1.8em;
+    padding: .1em;
+    border-radius: 50%;
+    background-color: #8B2635;
+  }
+  #uploadBouton::after {
+    content: "+";
+    text-align: center;
+    display: block;
+    font-size: 1.8em;
+    height: 100%;
+    width: 100%;
+    color: white;
+  }
+ .button:hover {
+    cursor: grab;
+  }
+  #uploadBouton > .button {
+    display: block;
+    width: 100%;
+    height: 100;
+  }
+  #fileInput {
+    display: none;
+  }
+  #submit {
+    display: none;
+  }
+  #uploadMsg {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -70%);
+    background-color: purple;
+    width: 35em;
+    height: 18em;
+    border-radius: 5em;
+    outline: .2em dashed black;
+  }
+  #uploadMsg > p {
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -75%);
+    width: 80%;
+    height: 80%;
+    font-size: 4em;
+    text-align: center;
+  }
+  #uploadMsg.highlight {
+    transition: all .5s ease;
+    display: block;
+  }
+  #historique {
+    border-bottom: 1px dashed black;
+    padding-bottom: 2em;
+  }
+  #Mps {
+    position: absolute;
+    height: 80%;
+    top: 0;
+    width: 100%;
+    z-index: -2;
+  }
+  .Mps {
+    position: relative;
+    height: 100%;
+    right: -100%;
+    top: 0;
+    transition: all .5s ease;
+    opacity: 0;
+    display: none;
+  }
+  .Mps > ul {
+    overflow-y: auto;
+    height: 90%;
+    top: 5%;
+    width: 100%;
+    background-color: white;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+  .Mps > ul > li {
+    color: black;
+    padding: 0 10px;
+  }
+  .Mps > ul > .myMp > h4 {
+    width: 100%;
+    text-align: right;
+    margin: 0;
+  }
+  .Mps > ul > .yourMp > h4 {
+    width: 100%;
+    text-align: left;
+    margin: 0;
+  }
+  .Mps > ul > .myMp > p {
+    width: 100%;
+    text-align: right;
+    margin: 0;
+  }
+  .Mps > ul > .yourMp > p {
+    width: 100%;
+    text-align: left;
+    margin: 0;
+  }
+  .myMp {
+    border-bottom: 1px solid grey;
+  }
+  .yourMp {
+    border-bottom: 1px solid grey;
+  }
+  .myMps {
+    background-color: grey;
+  }
+  .Mps > h1 {
+    position: relative;
+    margin: 0;
+    text-align: center;
+    top: 5px;
+  }
+  .Mps > h1:hover {
+    cursor: grab;
+  }
+  #envoiMp {
+    position: fixed;
+    width: 20%;
+    height: 5%;
+    bottom: -130%;
+    transition: bottom .5s ease;
+  }
+  #inputMp {
+    width: 80%;
+    margin: 0 10%;
+    font-size: 1em;
+    border: 1px solid grey;
+    background-color: white;
+  }
+  #submitMp {
+    display: none;
+  }
+  ul {
+    padding: 0;
+  }
+  li.me {
+    flex-direction: row-reverse;
+  }
+  li.you {
+    flex-direction: row;
+  }
+  li {
+    margin: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    color: white;
+  }
+  li > div {
+    max-width: 70%;
+    min-width: 15%;
+    padding: 2px 15px;
+    border-radius: 10px;
+    word-wrap: break-word;
+  }
+  #submitButton {
+    width: 20%;
+    display: none;
+  }
+  .myDiv {
+    right: 0;
+    margin-left: 30%;
+  }
+  .myDiv > .me {
+    text-align: right;
+    color: black;
+    margin: 0 1em 0 0;
+    font-weight: bolder;
+  }
+  .myDiv > .message {
+    background-color: #8B2635;
+    padding: 1em;
+    border-radius: 1em;
+    border-top-right-radius: 0;
+    margin: 0;
+  }
+  .yourDiv {
+    left: 0;
+    margin-right: 30%;
+  }
+  .yourDiv > .you {
+    color: black;
+    margin: 0 0 0 1em;
+    font-weight: bolder;
+  }
+  .yourDiv > .message {
+    background-color: #2C5784;
+    padding: 1em;
+    border-radius: 1em;
+    border-top-left-radius: 0;
+    margin: 0;
+    text-align: right;
+  }
+  .message {
+    font-size: 1.1em;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .participant {
+    flex-direction: row-reverse;
+    color: black;
+    font-size: 20px;
+  }
+  .participant:hover {
+    cursor: grab;
+  }
+  #participants {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #colonne {
+    width: 20%;
+    position: fixed;
+    right: 0;
+    height: 100%;
+    border-left: 1px solid grey;
+  }
+  #infos {
+    position: relative;
+    max-height: 80%;
+    overflow-y: auto;
+    margin: 0;
+    padding: 1em;
+    padding-right: 2em;
+    z-index: -1;
+    left: 0%;
+    opacity: 1;
+    transition: all .5s ease;
+  }
+  .titre {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 2em;
+  }
+  br {
+    display: block;
+    margin: 0.3em 0;
+    content:" ";
+  }
+  a {
+    color: white;
+    text-decoration-style: dotted;
+  }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+  let dropArea = document.getElementById("tout");
+  let uploadMsg = document.getElementById("uploadMsg");
+  var MpEnCours = "none";
+  var nomMpEnCours = -1;
+
+  /* gérer l'effet de blur et la petite fenêtre qui s'affiche au milieu*/
+  ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)
+  })
+
+  function preventDefaults (e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  ;['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false)
+  })
+
+  ;['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+  })
+
+  function highlight(e) {
+    dropArea.classList.add('highlight');
+    uploadMsg.classList.add('highlight')
+  }
+
+  function unhighlight(e) {
+    dropArea.classList.remove('highlight');
+    uploadMsg.classList.remove('highlight');
+  }
+
+dropArea.addEventListener('drop', handleDrop, false)
+
+  function handleDrop(e) {
+    let dt = e.dataTransfer
+    let files = dt.files
+    handleFiles(files)
+  }
+  function handleFiles(files) {
+    ([...files]).forEach(uploadFile)
+  }
+  function uploadFile(file) {
+    let url = '/chat'
+    let formData = new FormData()
+    formData.append('file', file)
+    fetch(url, {
+      method: 'POST',
+      body: formData
+  })
+    .then(() => {  console.log("upload effectué avec succès") })
+    .catch(() => { console.log("une erreur est survenue lors de l'upload") })
+  } 
+
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+let lastUserID = -1532;
+let lastAuthorID = -555;
+let myName = document.getElementById("name").textContent;
+let myID = document.getElementById("id").textContent;
+let premierMessageId = -555;
+
+  socket.on('connect', function() {
+    socket.emit("NewConnection");
+    console.log("hihi j'ai envoyé la demande de connection")
+    console.log('connected');
+  });
+
+  socket.on('disconnect', function () {
+    console.log('je suis déconnecté')
+    //location.reload();
+  });
+
+  function demandeHistorique() {
+    console.log('historique demandé')
+    socket.emit("historique", {"id" : premierMessageId,
+    "nombre" : (document.getElementById("nbHistorique").value)});
+  }
+
+  function ouvrirMp(id, name) {
+    element = document.getElementById("Mp"+id);
+    if (!(element)) {
+      parent = document.getElementById("Mps");
+      const div = document.createElement("div");
+      div.className = "Mps";
+      div.id = "Mp" + id;
+      const ul = document.createElement("ul");
+      const h1 = document.createElement("h1");
+      h1.innerHTML = "<-- " + name;
+      h1.setAttribute('onclick','fermerMp("'+id+'")');
+      div.appendChild(h1);
+      div.appendChild(ul);
+      parent.appendChild(div);
+    }
+    document.getElementById("Mp" + id).style.display = "block";
+    document.getElementById("Mp" + id).style.right = "0em";
+    document.getElementById("Mp" + id).style.opacity = "1";
+    document.getElementById("envoiMp").style.bottom = "1em";
+    document.getElementById("infos").style.left = "-100%";
+    document.getElementById("infos").style.opacity = "0";
+    const transition = document.querySelector('#infos');
+    transition.addEventListener('transitionend', () => {
+      document.getElementById("infos").style.display = "none";
+    });
+    MpEnCours = id;
+    nomMpEnCours = name;
+  } 
+
+  function fermerMp(id) {
+    document.getElementById("Mp" + id).style.right = "-100%";
+    document.getElementById("Mp" + id).style.opacity = "0";
+    document.getElementById("envoiMp").style.bottom = "-130%";
+    document.getElementById("infos").style.display = "block";
+    document.getElementById("infos").style.left = "0%";
+    document.getElementById("infos").style.opacity = "1";
+    const transition = document.getElementById("Mp" + MpEnCours);
+    transition.addEventListener('transitionend', () => {
+      document.getElementById("Mp" + id).style.display = "none";
+    });
+    MpEnCours = "none";
+    nomMpEnCours = -1;
+  }
+
+  window.onload = function() {
+    document.getElementById("inputMp").focus()
+    //when form is submitted, capture the input value and then send it to server
+    document
+    .getElementById("envoiMp")
+    .addEventListener("submit", function (event) {
+      if (document.getElementById("inputMp").value) {
+      event.preventDefault();
+      if(MpEnCours !== "none") {
+        console.log('Mp envoyé !', MpEnCours);
+        socket.emit("Mp", {"content": (document.getElementById("inputMp").value), "recipient": MpEnCours});
+        if (!(document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.className == "myMp"))) {
+          const li = document.createElement("li");
+          const p = document.createElement("p");
+          p.innerHTML = document.getElementById("inputMp").value;
+          const h4 = document.createElement("h4");
+          h4.innerHTML = myName;
+          li.appendChild(h4);
+          li.appendChild(p);
+          li.className = "myMp";
+          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].appendChild(li);
+        } else {
+          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].innerHTML += '<br>' + document.getElementById("inputMp").value;
+        }
+        var element = document.getElementById("Mp" + MpEnCours);
+        element.scrollTo(0, element.scrollHeight);
+        document.getElementById("inputMp").value = "";
+        event.preventDefault();
+      } else {
+        console.log("pas de Mp ouvert !");
+        event.preventDefault();
+      }
+    } else {
+      event.preventDefault();
+    }
+  });
+
+    document.getElementById("m").focus()
+    //when form is submitted, capture the input value and then send it to server
+    document
+    .getElementById("envoiMsg")
+    .addEventListener("submit", function (event) {
+    if (document.getElementById("m").value) {
+      event.preventDefault();
+      socket.emit("message", {"content": (document.getElementById("m").value)});
+      document.getElementById("m").value = "";
+    } else {
+      event.preventDefault();
+    }
+  });
+  }  
+
+  socket.on("userslist", (users) => {
+    console.log("userslist :", users);
+    updateUserslist(users);
+  });
+
+  socket.on('lien fichier', (data) => {
+    console.log(data);
+    let authorClass = "";
+    let divClass = "";
+    if (data.auteurId == myID) {
+      authorClass = "me";
+      divClass = "myDiv";
+    } else {
+      authorClass = "you";
+      divClass = "yourDiv";
+    }
+
+    const div = document.createElement("div");
+    div.className = divClass;
+    const li = document.createElement("li");
+    li.className = authorClass;
+    /*const p = document.createElement("p");
+    p.className = "time";
+    p.innerText = moment().format("hh:mm");*/
+    div.innerHTML =
+    '<p class="' +
+    authorClass +
+    '">' +
+    data.auteur +
+    "</p>" +
+    '<a class="message" href="' + data.lien + '"> ' +
+    data.nomFichier +
+    "</a>";
+    li.appendChild(div);
+    document.getElementById("messages").appendChild(li);
+      
+    //scroll to the bottom
+    var element = document.getElementById("chat")
+    element.scrollTo(0, element.scrollHeight);
+  });
+
+  socket.on('message', function(data) {
+    console.log("message reçu : ", data);
+    if (data.userID == lastUserID) {
+      concatenateMessage(data);
+    }
+    else {
+      displayNewMessage(data);
+    }
+    lastUserID = data.userID;
+    if (premierMessageId == -555) {
+      premierMessageId = data.messageId;
+    }
+  });
+
+  socket.on('Mp', function(data) {
+    console.log("Mp reçu : ", data)
+    if (!(document.getElementById("Mp" + data.userID))) {
+      parent = document.getElementById("Mps");
+      const div = document.createElement("div");
+      div.className = "Mps";
+      div.id = "Mp" + data.userID;
+      const ul = document.createElement("ul");
+      const h1 = document.createElement("h1");
+      h1.innerHTML = "<-- " + data.user;
+      h1.setAttribute('onclick','fermerMp("'+data.userID+'")');
+      div.appendChild(h1);
+      div.appendChild(ul);
+      parent.appendChild(div);
+    }
+    if (!(document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.className == "yourMp"))) {
+      const li = document.createElement("li");
+      const p = document.createElement("p");
+      p.innerHTML = data.content;
+      const h4 = document.createElement("h4");
+      h4.innerHTML = data.user;
+      li.appendChild(h4);
+      li.appendChild(p);
+      li.className = "yourMp";
+      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].appendChild(li);
+    } else {
+      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].innerHTML += '<br>' + data.content;
+    }
+  })
+
+  function displayNewMessage(data) {
+    let authorClass = "";
+    let divClass = "";
+    if (data.userID == myID) {
+      authorClass = "me";
+      divClass = "myDiv";
+    } else {
+      authorClass = "you";
+      divClass = "yourDiv";
+    }
+
+    const div = document.createElement("div");
+    div.className = divClass;
+    const li = document.createElement("li");
+    li.className = authorClass;
+    /*const p = document.createElement("p");
+    p.className = "time";
+    p.innerText = moment().format("hh:mm");*/
+    div.innerHTML =
+    '<p class="' +
+    authorClass +
+    '">' +
+    data.user +
+    "</p>" +
+    '<p class="message"> ' +
+    data.content +
+    "</p>";
+    li.appendChild(div);
+    document.getElementById("messages").appendChild(li);
+      
+    //scroll to the bottom
+    var element = document.getElementById("chat")
+    element.scrollTo(0, element.scrollHeight);
+  }
+
+  function concatenateMessage(data) {
+    let message = document.getElementById("messages").lastElementChild.getElementsByClassName("message")[0];
+    message.innerHTML += '<br>' + data.content;
+    var element = document.getElementById("chat");
+    element.scrollTo(0, element.scrollHeight);
+  }   
+
+  function updateUserslist(list) {
+    var parentId = "participants";
+    var childName = "participant";
+    //Supprimme la liste déjà existante sur la page (marche)
+    var childNodesToRemove = document.getElementById(parentId).getElementsByClassName(childName);
+    for(var i=childNodesToRemove.length-1;i >= 0;i--){
+        var childNode = childNodesToRemove[i];
+        childNode.parentNode.removeChild(childNode);
+    }
+    for(var j=0; j < list.names.length; j++) {
+      let participant = document.createElement("li");
+      participant.className = "participant";
+      participant.id = list.IDs[j];
+      if (list.names[j] != myName) {
+        participant.setAttribute('onclick','ouvrirMp("'+list.IDs[j]+'", "'+list.names[j]+'")');
+
+      }
+      participant.innerHTML = list.names[j];
+      document.getElementById("participants").appendChild(participant);
+  }
+  }
+      
+  function afficherHistorique(messages) {
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i].contenu[0] != "‡") {
+        if (lastAuthorID!=messages[i].auteurId || lastAuthorID==-555) {
+          let authorClass = "";
+          let divClass = "";
+          if (messages[i].auteurId == myID) {
+            authorClass = "me";
+            divClass = "myDiv";
+          } else {
+            authorClass = "you";
+            divClass = "yourDiv";
+          }
+
+          const div = document.createElement("div");
+          div.className = divClass;
+          const li = document.createElement("li");
+          li.className = authorClass;
+          /*const p = document.createElement("p");
+          p.className = "time";
+          p.innerText = moment().format("hh:mm");*/
+          div.innerHTML =
+          '<p class="' +
+          authorClass +
+          '">' +
+          messages[i].auteur +
+          "</p>" +
+          '<p class="message"> ' +
+          messages[i].contenu +
+          "</p>";
+          li.appendChild(div);
+          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+        } else {
+          let message = document.getElementById("historique").firstElementChild.getElementsByClassName("message")[0];
+          let content = message.innerHTML;
+          message.innerHTML = messages[i].contenu + '<br>' + content;
+        }
+      } else {
+        if (lastAuthorID!=messages[i].auteurId || lastAuthorID==-555) {
+          let authorClass = "";
+          let divClass = "";
+          if (messages[i].auteurId == myID) {
+            authorClass = "me";
+            divClass = "myDiv";
+          } else {
+            authorClass = "you";
+            divClass = "yourDiv";
+          }
+
+          const div = document.createElement("div");
+          div.className = divClass;
+          const li = document.createElement("li");
+          li.className = authorClass;
+          /*const p = document.createElement("p");
+          p.className = "time";
+          p.innerText = moment().format("hh:mm");*/
+          div.innerHTML =
+          '<p class="' +
+          authorClass +
+          '">' +
+          messages[i].auteur +
+          "</p>" +
+          '<a class="message" href="' + "/chat/téléchargements/" + messages[i].contenu.substring(1) + '"> ' +
+          messages[i].contenu.substring(1) +
+          "</p>";
+          li.appendChild(div);
+          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+        } else {
+          let message = document.getElementById("historique").firstElementChild.getElementsByClassName("message")[0];
+          let content = message.innerHTML;
+          message.innerHTML = '<a href="' + "/chat/téléchargements/" + messages[i].contenu.substring(1) + '">' + messages[i].contenu.substring(1) + '</a>' + '<br>' + content;
+        }
+      }
+      document.getElementById("historique").style.display = "block";
+      lastAuthorID = messages[i].auteurId;
+      premierMessageId = messages[i].messageId;
+    }
+      var element = document.getElementById("chat")
+      element.scrollTo(0, element.scrollHeight);
+    }
+
+
+  socket.on("historique", (messages) => {
+      afficherHistorique(messages);
+  });
+
+  </script>
+{% endblock %}
