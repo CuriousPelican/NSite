@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+{% endblock %}
+
 {% block content %}
 
     <h1> Groupe: {{ group.name }} </h1>
 
     <h1>Stats</h1>
+    <p>Info: ne figurent pas sur les graphiques les questions avec - de 3 réponses</p>
     <img src="{{ filepath+'.meansmeds.svg' }}" alt="Graphique moyennes & médianes">
     <img src="{{ filepath+'.stdevs.svg' }}" alt="Graphique écarts types">
     <img src="{{ filepath+'.histscumules.svg' }}" alt="Graphique proportions notes">

@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, url_for, render_template, request, jsonify, Blueprint, send_from_directory, abort
+from flask import flash, redirect, url_for, render_template, request, jsonify, Blueprint, send_from_directory, abort, send_file
 from flask_socketio import SocketIO, emit
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -35,13 +35,14 @@ def recevoirFichier():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         print('fichier reçu : ', file.filename)
-        file.save(url_for('static', filename="chat/uploaded"), filename)
+        file.save("app"+url_for('static', filename=f"chat/downloads/{filename}"))
         #m = Messages.query.order_by(Messages.messageId.desc()).first()
         #dernierId = m.messageId
         if filename[-4:] == ".png" or filename[-4:] == ".jpg" or filename[-4:] == ".gif" or filename[-5:] == ".jpeg":
             fileType = 3
         else:
             fileType = 2
+        print(fileType, filename)
         socketio.emit("file link", {"author": current_user.name, "authorId" : current_user.id, "link":'/chat/téléchargements/'+ filename, "filename":filename, "filetype":fileType})
         new_message = Messages(auteurId=current_user.id, auteur=current_user.name, contenu=filename, messageId=fileType)
         db.session.add(new_message)
@@ -53,10 +54,13 @@ def recevoirFichier():
 
 @chat.route('téléchargements/<filename>')
 def envoiFichier(filename):
-    try:
-        return send_from_directory(url_for('static', filename="chat/uploaded"), filename=filename, as_attachment=True)
-    except FileNotFoundError:
-        abort(404)
+    print("OK", filename)
+    filename = secure_filename(filename)
+    return send_file(url_for('static', filename=f"chat/downloads/{filename}")[1:], as_attachment=True)
+    # try:
+    #     return send_from_directory("app", url_for('static', filename="chat/downloads/"), filename=filename, as_attachment=True)
+    # except FileNotFoundError:
+    #     abort(404)
 
 @socketio.on('NewConnection')
 def addlist():

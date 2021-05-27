@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/bulma.css')}}">
-    <title>Base2</title>
+    {% block head %}
+    {% endblock %}
 </head>
 
 <body>
@@ -47,7 +47,7 @@
     body {
         margin: 0;
         height: 100vh;
-        overflow-y: hidden;
+        /* overflow-y: hidden; */
         background-color: #1C2124;
         color: white;
     }
