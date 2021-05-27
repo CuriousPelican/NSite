@@ -5,23 +5,43 @@
 {% endblock %}
 
 {% block content %}
+           
+<div class="block py-3 my-6" style="background-color: #1C2124;">
+    <h1 class="title has-text-centered mt-6 is-2" style="color: white;"> Titre: {{ item.titre }} </h1>
+    <h4 class="subtitle has-text-centered" style="color: white;"> Date de creation: {{ item.creationdate }} </h4>
 
-    <h1> Titre: {{ item.titre }} </h1>
-    <h4> Date de creation: {{ item.creationdate }} </h4>
-    <p> Description: {{ item.desc }} </p>
-    <a href="{{url_for('feed.question', feeditemHash=item.hashedid)}}">Lien</a>
-    {% if item.isopen == false %}
-        <p>Etat: Fermé</p>
-        <a href="{{url_for('feed.openfeeditem', feeditemId=item.id)}}">Ouvrir</a>
-    {% else %}
-        <p>Etat: Ouvert</p>
-        <a href="{{url_for('feed.closefeeditem', feeditemId=item.id)}}">Fermer</a>
-    {% endif %}
+    <br><br><br>
+    <h1 class="title mt-6 pt-6 is-4 ml-6" style="color: white;">Description:</h1>
+    <p class="ml-5 pb-6">{{ item.desc }}</p>
 
-    <h1>Statistiques</h1>
-    <img src="{{ filepath+'.piefeeditem.svg' }}" alt="Graphique effectifs notes">
+    <div class="columns py-6">
+    <span class="column is-offset-1 is-4"><a class="button is-link is-rounded is-fullwidth" href="{{url_for('feed.question', feeditemHash=item.hashedid)}}">Lien de réponse</a></span>
+    <span class="column is-offset-1 columns">
+        {% if item.isopen == false %}
+        <span class="column is-4 mt-2 has-text-centered">
+            <p class="subtitle" style="color: white;">Etat: Fermé</p>
+        </span>
+        <span class="column is-5 is-offset-1">
+            <a class="button is-info is-rounded is-fullwidth" href="{{url_for('feed.openfeeditem', feeditemId=item.id)}}">Ouvrir</a>
+        </span>
+        {% else %}
+        <span class="column is-4 mt-2 has-text-centered">
+            <p class="subtitle" style="color: white;">Etat: Ouvert</p>
+        </span>
+        <span class="column is-5 is-offset-1">
+            <a class="button is-info is-rounded is-fullwidth" href="{{url_for('feed.closefeeditem', feeditemId=item.id)}}">Fermer</a>
+        </span>
+        {% endif %}
+    </span>
+    </div>
+
+    <h1 class="title ml-6 mt-6 py-6" style="color: white;">Statistiques</h1>
+    <div class="columns">
+    <img class="column box is-offset-1 is-4" src="{{ filepath+'.piefeeditem.svg' }}" alt="Graphique effectifs notes">
     <!-- Tableau à afficher à la verticale -->
-    <table class="table">
+    <div class="column is-5 is-offset-1 is-justify-content-center">
+        <div class="box">
+    <table class="table is-fullwidth">
         <thead>
             <tr>
                 <th>Total</th>
@@ -49,17 +69,26 @@
             </tr>
         </tbody>
     </table>
+</div>
+    </div>
+    </div>
 
-    <h1>Commentaires</h1>
+    <br><br><br>
+    <div class="content mt-6 py-6">
+    <h1 class="ml-6" style="color: white;">Commentaires</h1>
     {% set listcomments = item.comments.split('⸎⸷⫸ʨ5ƐƖƐ␥‡') %}
     <ul>
     {% for comment in listcomments %}
         <li>{{ comment }}</li>
     {% endfor %}
     </ul>
+</div>
 
-    <a href="{{url_for('feed.deletefeeditem', feeditemId=item.id)}}">Supprimer</a>
+<div class="mt-6 py-6 columns">
+    <a class="column is-4 is-offset-1 button is-danger is-rounded is-fullwidth" href="{{url_for('feed.deletefeeditem', feeditemId=item.id)}}">Supprimer feedback</a>
+    <a class="column is-4 is-offset-2 button is-primary is-rounded is-fullwidth is-outlined" href="{{url_for('feed.group', groupId=item.groupId)}}"> Retour </a>
+</div>
 
-    <a href="{{url_for('feed.group', groupId=item.groupId)}}"> Retour </a>
+</div>
 
 {% endblock %}

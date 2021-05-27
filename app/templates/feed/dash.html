@@ -6,16 +6,25 @@
 {% endblock %}
 
 {% block content %}
+<div class="block" style="background-color: #1C2124;">
 
-<div class="block mt-6">
+<div class="block pt-5 mt-6">
     {% for group in groups %}
-    <div class="column is-8 is-offset-2 box">
-    <div class="columns tags">
-        <span class="column is-4"><h3 class="has-text-centered">{{ group.name }}</h3></span>
-        <span class="column is-2"><a class="button" href="{{url_for('feed.newfeeditem', groupId=group.id)}}"> Nouveau feedback </a></span>
-        <span class="column is-2"><a class="button" href="{{url_for('feed.group', groupId=group.id)}}"> Statistiques </a></span>
-        <span class="column is-2"><a class="button" href="{{url_for('feed.deletegroup', groupId=group.id)}}"> Supprimer groupe</a></span>
-    </div>
+    <div class="column is-8 is-offset-2 box" style="background-color:white; border-radius:290486px">
+        <div class="columns">
+            <span class="column"><h3 class="has-text-centered title">{{ group.name }}</h3></span>
+            <div class=" column field column has-addons">
+                <div class="control">
+                    <a class="button is-primary is-outlined has-text-centered is-rounded" href="{{url_for('feed.newfeeditem', groupId=group.id)}}"> Nouveau feedback </a>
+                </div>
+                <div class="control">
+                    <a class="button is-info has-text-centered is-rounded" href="{{url_for('feed.group', groupId=group.id)}}"> Statistiques </a>
+                </div>
+                <div class="control">
+                    <a class="button is-danger has-text-centered is-rounded" href="{{url_for('feed.deletegroup', groupId=group.id)}}"> Supprimer groupe</a>
+                </div>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>
@@ -25,12 +34,13 @@
 
         <div class="field">
             <div class="control">
-                <input class="input is-large" type="text" name="groupname" placeholder="Nom du groupe" autofocus="">
+                <input class="input is-large is-rounded" type="text" name="groupname" placeholder="Nom du groupe" autofocus="">
             </div>
         </div>
 
-        <button class="button is-block is-primary is-large is-fullwidth">Créer</button>
+        <button class="button is-block is-primary is-large is-fullwidth is-rounded">Créer</button>
     </form>
+</div>
 </div>
 
 {% endblock %}
