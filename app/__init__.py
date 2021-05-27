@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = token_urlsafe(32) # génère une clé de façon sécurisée (pour signer les formulaire & les cookies de session, chose non faite)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite' # lien vers la DB
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # ne pas enregistrer dans la DB toutes les modifications
+#app.config['SERVER_NAME'] = '0.0.0.0:5001'
 
 db = SQLAlchemy(app) # initialise la DB
 
@@ -45,6 +46,6 @@ app.register_blueprint(chat_blueprint, url_prefix="/chat") # on passe toutes les
 from app.blueprints.feed import feed as feed_blueprint
 app.register_blueprint(feed_blueprint, url_prefix="/feed")
 
-if __name__ == '__main__': # inutile vu que lancé avec run.py
+if __name__ == '__main__': # si on lance avec run.py
     db.create_all()
     socketio.run(app)

@@ -208,10 +208,11 @@ def group(groupId):
 
     if group != None: # si trouvé
         if request.method == "POST": # si forumulaire de suppression des x plus anciennes questions renvoyé
-            itemstodelete = FeedItem.query.filter_by(groupId=group.id).limit(request.form.get('nbquestions')).all()
-            for itemtodelete in itemstodelete:
-                db.session.delete(itemtodelete)
-            db.session.commit()
+            if request.form.get('nbquestions'):
+                itemstodelete = FeedItem.query.filter_by(groupId=group.id).limit(request.form.get('nbquestions')).all()
+                for itemtodelete in itemstodelete:
+                    db.session.delete(itemtodelete)
+                db.session.commit()
             return redirect(url_for("feed.group", groupId=group.id)) # et on redirige vers la même page (on actualise) avec la methode GET
 
         else:

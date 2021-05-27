@@ -1,27 +1,9 @@
 {% extends "base.html" %}
 
-{% block head %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-{% endblock %}
-
 {% block content %}
         
-<div class="block py-3 my-6" style="background-color: #1C2124;">
+<div class="block py-3 my-6">
     <h1 class="title has-text-centered mt-6 is-2" style="color: white;"> Groupe: {{ group.name }} </h1>
-
-    <br>
-    <div class="block py-6 mt-6 content">
-    <h1 class="ml-6" style="color: white;">Statistiques</h1>
-    <p class="ml-6 subtitle" style="color: white;">Info: ne figurent pas sur les graphiques les questions avec - de 3 réponses</p>
-    <div class="columns mt-6">
-        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.meansmeds.svg' }}" alt="Graphique moyennes & médianes"></span>
-        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.stdevs.svg' }}" alt="Graphique écarts types"></span>
-    </div>
-    <div class="columns mt-6">
-        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.histscumules.svg' }}" alt="Graphique proportions notes"></span>
-        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.effectifsreponses.svg' }}" alt="Graphique nombre réponses"></span>
-    </div>
-    </div>
 
     <br><br>
     <h1 class="title ml-6 pt-6 mt-6" style="color: white;">Feedbacks</h1>
@@ -57,8 +39,21 @@
         </tbody>
     </table>
     </div>
-
     <a class="column is-4 is-offset-4 button is-block is-primary is-large is-rounded" href="{{url_for('feed.newfeeditem', groupId=group.id)}}"> Nouveau feedback </a>
+
+    <br><br>
+    <div class="block py-6 mt-6 content">
+    <h1 class="ml-6" style="color: white;">Statistiques</h1>
+    <p class="ml-6 subtitle" style="color: white;">Info: ne figurent pas sur les graphiques les questions avec - de 3 réponses</p>
+    <div class="columns mt-6">
+        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.meansmeds.svg' }}" alt="Graphique moyennes & médianes"></span>
+        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.stdevs.svg' }}" alt="Graphique écarts types"></span>
+    </div>
+    <div class="columns mt-6">
+        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.histscumules.svg' }}" alt="Graphique proportions notes"></span>
+        <span class="column"><img class="box column is-10 is-offset-1" src="{{ filepath+'.effectifsreponses.svg' }}" alt="Graphique nombre réponses"></span>
+    </div>
+    </div>
 
     <br>
     <div class="column is-6 is-offset-3 py-6 mt-6">

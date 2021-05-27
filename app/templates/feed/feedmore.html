@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 
-{% block head %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-{% endblock %}
-
 {% block content %}
            
-<div class="block py-3 my-6" style="background-color: #1C2124;">
+<div class="block py-3 my-6">
     <h1 class="title has-text-centered mt-6 is-2" style="color: white;"> Titre: {{ item.titre }} </h1>
     <h4 class="subtitle has-text-centered" style="color: white;"> Date de creation: {{ item.creationdate }} </h4>
 

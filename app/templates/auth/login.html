@@ -1,24 +1,20 @@
 <! -- on "appelle" base.html, auquel va venir se greffer l'html et le css de cette page -->
 {% extends "base.html" %}
 
-{% block head %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-{% endblock %}
-
 <! -- on place les balises html de la page dans un block -->
 {% block content %}
 <div class="column is-4 is-offset-4">
-  <h3 class="title">Login</h3>
-  <div class="box">
+  <h1 class="title has-text-centered mt-6 is-2" style="color: white;">Login</h1>
+  <div class="box mt-6" style="border-radius:40px;">
     <! -- Espace pour afficher les messages d'erreur -->
     {% with messages = get_flashed_messages() %} {% if messages %}
-    <div class="notification is-danger">{{ messages[0] }}</div>
+    <div class="notification is-danger" style="border-radius:290486px;">{{ messages[0] }}</div>
     {% endif %} {% endwith %}
-    <form method="POST" action="/login">
+    <form method="POST" action="#">
       <div class="field">
         <div class="control">
           <input
-            class="input is-large"
+            class="input is-large is-primary is-rounded"
             type="email"
             name="email"
             placeholder="Your Email"
@@ -30,20 +26,20 @@
       <div class="field">
         <div class="control">
           <input
-            class="input is-large"
+            class="input is-large is-primary is-rounded"
             type="password"
             name="password"
             placeholder="Your Password"
           />
         </div>
       </div>
-      <div class="field">
+      <div class="field has-text-centered">
         <label class="checkbox">
-          <input type="checkbox" />
-          Remember me
+          <input type="checkbox"/>
+          Rester connecté
         </label>
       </div>
-      <button class="button is-block is-info is-large is-fullwidth">
+      <button class="button is-block is-primary is-rounded is-large is-fullwidth">
         Login
       </button>
     </form>

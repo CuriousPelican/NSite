@@ -1,13 +1,6 @@
 {% extends "base.html" %}
 
-{% block head %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-<title>Feedback - Dashboard</title>
-{% endblock %}
-
 {% block content %}
-<div class="block" style="background-color: #1C2124;">
-
 <div class="block pt-5 mt-6">
     {% for group in groups %}
     <div class="column is-8 is-offset-2 box" style="background-color:white; border-radius:290486px">
@@ -34,13 +27,12 @@
 
         <div class="field">
             <div class="control">
-                <input class="input is-large is-rounded" type="text" name="groupname" placeholder="Nom du groupe" autofocus="">
+                <input class="input is-large is-rounded is-primary" type="text" name="groupname" placeholder="Nom du groupe" autofocus="">
             </div>
         </div>
 
         <button class="button is-block is-primary is-large is-fullwidth is-rounded">Créer</button>
     </form>
-</div>
 </div>
 
 {% endblock %}
