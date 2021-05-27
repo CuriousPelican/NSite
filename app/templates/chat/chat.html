@@ -1,55 +1,55 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <div id="tout">
-    <div id="name" style="display:none;">{{ name }}</div>
-    <div id="id" style="display:none;">{{ id }}</div>
-    <div id="chat" onscroll="boutonHistorique()">
-      <form id="envoiMsg">
-          <input type="text" id="m" placeholder="Entrez ici votre message" />
-          <input type="submit" id="submitButton" value="envoyer" />
-      </form>
-      <ul id="historique" style="display: none;"></ul>
-      <ul id="messages"></ul>
-      <br><br><br><br>
-    </div>
-    <label class="bouton" id="uploadBouton" for="fileInput"><form method="POST" action="/chat/" enctype="multipart/form-data">
-      <input type="file" id="fileInput" accept="image/*, text/*" name="file" >
-      <input type="submit" id="submit">
-    </form></label>
-    <label style="display:none;" class="bouton" for="submit">huhu</label>
-    
-    
-    <div id="colonne">
-      <div id="infos">
-        <h1 class="titre">Participants :</h1>
-        <ul id="participants">
-          <li class="participant">_jeb</li>
-          <li class="participant">Dinnerbone</li>
-        </ul>
-      </div>
-      <div id="Mps">
-        <form id="envoiMp">
-          <input type="text" id="inputMp" placeholder="hu" />
-          <input type="submit" id="submitMp" value="envoyer" />
-        </form>
-      </div>
-    </div>
-    
-    
-    <div id="uploadMsg"><p>Lâchez pour envoyer votre fichier</p></div>
+<! -- on utilise jinja2 pour pouvoir utiliser cette page comme une extension de base.html, c'est pour cela qu'on met le code dans des blocks -->
+{% extends "base.html" %} {% block content %}
+<div id="tout">
+  <div id="name" style="display: none">{{ name }}</div>
+  <! -- ce sont des variables qui sont données par le code serveur, voir chat.py -->
+  <div id="id" style="display: none">{{ id }}</div>
+  <! -- lorsque l'on scroll le chat, cela éxécute la fonction "boutonHistorique()" afin d'afficher l'historique si l'on scrolle tout en haut -->
+  <div id="chat" onscroll="boutonHistorique()">
+    <form id="envoiMsg">
+      <input type="text" id="m" placeholder="Entrez ici votre message" />
+      <input type="submit" id="submitButton" value="envoyer" />
+    </form>
+    <! -- on affiche pas la balise de l'historique tant que les messages de l'historique ne sont pas affichés, d'où le display: none -->
+    <ul id="historique" style="display: none"></ul>
+    <ul id="messages"></ul>
+    <br /><br /><br /><br />
   </div>
-{% endblock %}
+  <label class="bouton" id="uploadBouton" for="fileInput"
+    ><form method="POST" action="/chat/" enctype="multipart/form-data">
+      <input type="file" id="fileInput" accept="image/*, text/*" multiple name="file" onchange="handleFiles(this.files)" />
+      <input type="submit" id="submit" /></form
+  ></label>
 
-{% block styles %}
+  <div id="colonne">
+    <div id="infos">
+      <h1 class="titre">Participants :</h1>
+      <ul id="participants">
+        <li class="participant">_jeb</li>
+        <li class="participant">Dinnerbone</li>
+      </ul>
+    </div>
+    <div id="Mps">
+      <form id="envoiMp">
+        <input type="text" id="inputMp" placeholder="Tapez ici votre MP" />
+        <input type="submit" id="submitMp" value="envoyer" />
+      </form>
+    </div>
+  </div>
+
+  <div id="uploadMsg"><p>Lâchez pour envoyer votre fichier</p></div>
+</div>
+{% endblock %} {% block styles %}
+<! -- on met la balise de style dans un autre block -->
 <style>
   #tout {
     margin: 0;
     overflow-y: hidden;
   }
+  /*Sélectionne tous les descendants direct de #tout lorsqu'il a la class .highlight, sauf la balise #uploadMsg, qui est la pop-up lorsque l'on glisse un fichier*/
   #tout.highlight > *:not(#uploadMsg) {
     filter: blur(5px);
-    transition: all .5s ease;
+    transition: all 0.5s ease;
   }
   #tout.highlight {
     cursor: grabbing;
@@ -65,18 +65,17 @@
   #m {
     position: relative;
     border-radius: 5em;
-    border: 1px solid black;
-    border-style: dashed;
-    background-color: #EEEEEE;
+    border: 2px solid #8b2635;
+    background-color: #eeeeee;
     transition: background 1s ease;
     height: 1.8em;
     padding-left: 1em;
     width: 100%;
     font-size: 2em;
-    bottom: .1em;
+    bottom: 0.1em;
   }
   #m:focus {
-    border: 3px solid #8B2635;
+    border: 3px solid #8b2635;
     transition: background 1s ease;
     background-color: white;
     border-radius: 1em;
@@ -97,13 +96,13 @@
     left: 1.1em;
     width: 1.8em;
     height: 1.8em;
-    padding: .1em;
+    padding: 0.1em;
     border-radius: 50%;
-    background-color: #8B2635;
+    background-color: #8b2635;
   }
   #uploadBouton::after {
     content: "+";
-    font-family: 'sans-serif';
+    font-family: "sans-serif";
     text-align: center;
     display: block;
     font-size: 1.8em;
@@ -115,7 +114,7 @@
   #uploadBouton::after:hover {
     font-size: 2em;
   }
- .bouton:hover {
+  .bouton:hover {
     cursor: grab;
   }
   #uploadBouton > .bouton {
@@ -130,34 +129,31 @@
     display: none;
   }
   #uploadMsg {
-    display: none;
     position: absolute;
-    left: 50%;
+    left: 30%;
     top: 50%;
     transform: translate(-50%, -70%);
-    background-color: purple;
+    background: linear-gradient(225deg, rgb(206, 44, 255), #fac61d);
+    background-size: 250% 250%;
+    animation: fond 3s ease infinite;
     width: 35em;
-    height: 18em;
+    height: 10em;
     border-radius: 5em;
-    outline: .2em dashed black;
+    border: 0.2em dashed black;
+
+    transform: scale(0,1);
+    
   }
   #uploadMsg > p {
-    color: white;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -75%);
-    width: 80%;
-    height: 80%;
-    font-size: 4em;
+    font-size: 3em;
     text-align: center;
   }
   #uploadMsg.highlight {
-    transition: all .5s ease;
-    display: block;
+    transition: all 0.2s ease;
+    transform: scale(1,1);
   }
   #historique {
-    border-bottom: 1px dashed black;
+    border-bottom: 1px dashed white;
     padding-bottom: 2em;
   }
   .image {
@@ -178,7 +174,7 @@
     height: 100%;
     right: -100%;
     top: 0;
-    transition: all .5s ease;
+    transition: all 0.5s ease;
     opacity: 0;
     display: none;
   }
@@ -239,7 +235,7 @@
     width: 20%;
     height: 5%;
     bottom: -130%;
-    transition: bottom .5s ease;
+    transition: bottom 0.5s ease;
   }
   #inputMp {
     width: 80%;
@@ -283,41 +279,53 @@
   }
   .myDiv > .me {
     text-align: right;
-    color: black;
+    color: white;
+    
     margin: 0 1em 0 0;
     font-weight: bolder;
   }
   .myDiv > .message {
-    background-color: #8B2635;
+    background-color: #8b2635;
     padding: 1em;
     border-radius: 1em;
     border-top-right-radius: 0;
     margin: 0;
+    box-shadow: -10px 5px 5px #171b1d;
   }
   .yourDiv {
     left: 0;
     margin-right: 30%;
   }
   .yourDiv > .you {
-    color: black;
+    color: white;
     margin: 0 0 0 1em;
     font-weight: bolder;
   }
   .yourDiv > .message {
-    background-color: #2C5784;
+    background-color: #2c5784;
     padding: 1em;
     border-radius: 1em;
     border-top-left-radius: 0;
     margin: 0;
     text-align: right;
+    box-shadow: -10px 5px 5px #171b1d;
+  }
+  @keyframes fond {
+      0%{background-position:0% 50%}
+      50%{background-position:50% 100%}
+      100%{background-position:0% 50%}
   }
   .message {
     max-width: 100%;
     font-size: 1.1em;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif;
   }
-  .yourMp, .myMp, .message {
+  .yourMp,
+  .myMp,
+  .message {
     white-space: pre-line;
+    /*Permet de revenir à la ligne entre les messages grâce aux "\r\n" que l'on ajoute dans le TextContent de l'élément dans chaque message
+    On ne peut pas utiliser "\n" ni les balises <br> car on n'utilise pas innerHTML (pour empêcher l'exploitation de failles XSS)*/
   }
   .participant {
     flex-direction: row-reverse;
@@ -332,15 +340,15 @@
     overflow-x: hidden;
     overflow-y: auto;
   }
-  .participants {
-    display: flex;
+  .participant {
+    color: white;
   }
   .participant::after {
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: .6em;
+    font-size: 0.6em;
     color: white;
     width: 1.2em;
     height: 1.2em;
@@ -348,41 +356,46 @@
     background-color: red;
     border-radius: 50%;
   }
+  /*Tous ces ::afters permettent de mettre la petite vignette indiquant le nombre de nouveaux messages privés reçus
+  Comme on ne peut pas modifier leur contenu via le JS, on est obligé d'en créer plusieurs, chacun associé à une class
+  Il nous suffit donc de modifier la class de l'élément pour obtenir la vignette que l'on veut*/
   ._1::after {
-    content: '1';
+    content: "1";
   }
   ._2::after {
-    content: '2';
+    content: "2";
   }
   ._3::after {
-    content: '3';
+    content: "3";
   }
   ._4::after {
-    content: '4';
+    content: "4";
   }
   ._5::after {
-    content: '5';
+    content: "5";
   }
   ._6::after {
-    content: '6';
+    content: "6";
   }
   ._7::after {
-    content: '7';
+    content: "7";
   }
   ._8::after {
-    content: '8';
+    content: "8";
   }
   ._9::after {
-    content: '9';
+    content: "9";
   }
+  /*A partir de 10 messages, on affichera "9+"*/
   ._10::after {
-    content: '9+';
+    content: "9+";
   }
   #colonne {
     width: 20%;
     position: fixed;
     right: 0;
     height: 100%;
+    background-color: #1C2124;
     border-left: 1px solid grey;
   }
   #infos {
@@ -395,7 +408,7 @@
     z-index: -1;
     left: 0%;
     opacity: 1;
-    transition: all .5s ease;
+    transition: all 0.5s ease;
   }
   .titre {
     font-size: x-large;
@@ -406,126 +419,154 @@
   br {
     display: block;
     margin: 0.3em 0;
-    content:" ";
+    content: " ";
   }
   a {
     display: block;
     color: white;
     text-decoration-style: dotted;
   }
-  /* width */
+  /*Les instructions suivantes fonctionnent pour les navigateurs utilisant webkit, comme chrome. Cela ne marche pas avec Firefox*/
+  /* Modifie la largeur de la barre de défilement */
   ::-webkit-scrollbar {
     width: 10px;
   }
 
-  /* Track */
+  /* Le "rail" sur lequel glisse le "slider" de défilement */
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #f1f1f1;
   }
 
-  /* Handle on hover */
+  /* Le "slider" de défilement */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Le "slider" lorsque l'on passe dessus avec la souris */
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
 </style>
-{% endblock %}
-
-{% block script %}
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+{% endblock %} {% block script %}
+<! -- on met le JavaScript à son tour dans un block -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"
+>
+  /*On importe la bibliothèque socketio, qui est le module qui va nous permettre d'envoyer des web sockets facilement
+</script>
 <script type="text/javascript" charset="utf-8">
+  // dropArea : zone où l'on peut faire glisser des fichiers pour les uploader sur le serveur
   let dropArea = document.getElementById("tout");
+  // uploadMsg : élément qui apparaîtra lorsaue l'on fera glisser un fichier
   let uploadMsg = document.getElementById("uploadMsg");
+  // MpEnCours : stocke l'identifiant de l'utilisateur associé à la zone de Message Privé qui est actuellement ouverte
   var MpEnCours = "none";
-  var nomMpEnCours = -1;
 
+  // fonction appelée à chaque fois que l'on scrolle dans le chat
   function boutonHistorique() {
+    // si on se trouve tout en haut du chat
     if (document.getElementById("chat").scrollTop == 0) {
+      // on demande 20 nouveaux messages dans l'historique
       demandeHistorique(20);
     }
   }
-  
-  /* gérer l'effet de blur et la petite fenêtre qui s'affiche au milieu*/
-  ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, preventDefaults, false)
-  })
 
-  function preventDefaults (e) {
-    e.preventDefault()
-    e.stopPropagation()
+  // Pour tous les evènements qui concernent la glissement de fichiers sur la page
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+  });
+
+  // empêche des bugs en stoppant l'évènement et sa propagation (ce sont des fonctions de base de JavaScript)
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 
-  ;['dragenter', 'dragover'].forEach(eventName => {
-    dropArea.addEventListener(eventName, highlight, false)
-  })
+  // on fait éxécter la fonction highlight à chaque fois que l'on fait "entrer" un document sur la page, et à chaque fois qu'on le fait bouger
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropArea.addEventListener(eventName, highlight, false);
+  });
 
-  ;['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, unhighlight, false)
-  })
+  // on fait éxécter la fonction unhighlight à chaque fois que l'on fait "sortir" un document de la page, et à chaque fois qu'on en dépose un
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+  });
 
+  // on ajoute les class nécessaires pour flouter l'arrière plan et faire apparaître le message "uploadMsg" en pop-up
   function highlight(e) {
-    dropArea.classList.add('highlight');
-    uploadMsg.classList.add('highlight')
+    dropArea.classList.add("highlight");
+    uploadMsg.classList.add("highlight");
   }
 
+  // on retire les class pour déflouter l'arrière plan et faire disparaître la pop-up
   function unhighlight(e) {
-    dropArea.classList.remove('highlight');
-    uploadMsg.classList.remove('highlight');
+    dropArea.classList.remove("highlight");
+    uploadMsg.classList.remove("highlight");
   }
 
-dropArea.addEventListener('drop', handleDrop, false)
-
+  // à chaque fois que l'on dépose un fichier dans l'espace dropArea, on exécute la fonction handleDrop, qui s'occupe d'envoyer le fichier au serveur
+  dropArea.addEventListener("drop", handleDrop, false);
+  
+  // on "extrait" le ou les fichiers de l'élément
   function handleDrop(e) {
-    let dt = e.dataTransfer
-    let files = dt.files
-    handleFiles(files)
+    let dt = e.dataTransfer;
+    let files = dt.files;
+    handleFiles(files);
   }
+  // on upload chaque fichier à la fois
   function handleFiles(files) {
-    ([...files]).forEach(uploadFile)
+    [...files].forEach(uploadFile);
   }
+  // on envoie les fichier avec la méthode POST à l'url "/chat/" grâce à FormData, qui est de base dans le JavaScript
   function uploadFile(file) {
-    let url = '/chat/'
-    let formData = new FormData()
-    formData.append('file', file)
+    let url = "/chat/";
+    let formData = new FormData();
+    formData.append("file", file);
     fetch(url, {
-      method: 'POST',
-      body: formData
-  })
-    .then(() => {  console.log("upload effectué avec succès") })
-    .catch(() => { console.log("une erreur est survenue lors de l'upload") })
-  } 
+      method: "POST",
+      body: formData,
+    })
+      // si ça marche
+      .then(() => {
+        console.log("upload effectué avec succès");
+      })
+      // si ça rate
+      .catch(() => {
+        console.log("une erreur est survenue lors de l'upload");
+      });
+  }
 
-var socket = io.connect('http://' + document.domain + ':' + location.port);
-let lastUserID = -1532;
-let lastAuthorID = -555;
-let myName = document.getElementById("name").textContent;
-let myID = document.getElementById("id").textContent;
-let premierMessageId = -555;
+  // on ouvre un web socket à l'adresse de connection
+  var socket = io.connect("http://" + document.domain + ":" + location.port);
+  // identifiant correspondant à l'auteur du dernier message du chat
+  let lastUserID = -1532;
+  // identifiant correspondant à l'auteur du permier message de l'historique affiché
+  let lastAuthorID = -555;
+  // on récupère nos propres infos que l'on a reçu dans l'html avec {{ name }} et {{ id }}
+  let myName = document.getElementById("name").textContent;
+  let myID = document.getElementById("id").textContent;
+  // identifiant du premier message de l'historique affiché
+  let premierMessageId = -555;
 
-  socket.on('connect', function() {
+  // lorsque l'on reçoit le web socket envoyé automatiquement dès qu'on se connecte, on en voie au serveur une demande de connexion
+  socket.on("connect", function () {
     demandeHistorique(30);
     socket.emit("NewConnection");
-    console.log("hihi j'ai envoyé la demande de connection")
+    console.log("hihi j'ai envoyé la demande de connection");
   });
 
-  socket.on('disconnect', function () {
-    console.log('je suis déconnecté')
-    //location.reload();
-  });
-
+  // fonction qui permet de demander un nombre X de messages de l'historique
   function demandeHistorique(number) {
-    console.log('historique demandé')
-    socket.emit("historique", {"id" : premierMessageId,
-    "nombre" : number});
+    console.log("historique demandé");
+    socket.emit("historique", { id: premierMessageId, nombre: number });
   }
 
+  // fonction éxécutée lorsque l'on clique sur un nom d'utilisateur dans la liste de ces derniers
   function ouvrirMp(id, name) {
-    element = document.getElementById("Mp"+id);
-    if (!(element)) {
+    element = document.getElementById("Mp" + id);
+    // si la page de message privés n'existe pas pour ce destinataire, on la crée
+    if (!element) {
       parent = document.getElementById("Mps");
       const div = document.createElement("div");
       div.className = "Mps";
@@ -534,27 +575,32 @@ let premierMessageId = -555;
       const ul = document.createElement("ul");
       const h1 = document.createElement("h1");
       h1.textContent = "<-- " + name;
-      h1.setAttribute('onclick','fermerMp("'+id+'")');
+      h1.setAttribute("onclick", 'fermerMp("' + id + '")');
       div.appendChild(h1);
       div.appendChild(ul);
       parent.appendChild(div);
     }
+    // on ouvre ensuite la page en la faisant apparaître puis glisser sur la gauche pour faire une jolie animation
     document.getElementById("Mp" + id).style.display = "block";
     document.getElementById("Mp" + id).style.right = "0em";
     document.getElementById("Mp" + id).style.opacity = "1";
     document.getElementById("envoiMp").style.bottom = "1em";
     document.getElementById("infos").style.left = "-100%";
     document.getElementById("infos").style.opacity = "0";
-    const transition = document.querySelector('#infos');
-    transition.addEventListener('transitionend', () => {
+    // passe la balise contenant la liste des utilisateurs en invisible à la fin de sa transistion pour éviter que l'on copie le texte par mégarde
+    const transition = document.querySelector("#infos");
+    transition.addEventListener("transitionend", () => {
       document.getElementById("infos").style.display = "none";
     });
+    // on enregistre l'identifiant de l'utilisateur correspondant à la page de message privés
     MpEnCours = id;
-    nomMpEnCours = name;
+    // on "reset" le nombre de nouveaux messages pour supprimer la vignette de notification, car ce ne sont plus des nouveaux messages
     element.dataset.newMessages = 0;
+    // on supprime la deuxième class de l'élément pour faire disparaître la vignette de notification is elle existe
     document.getElementById(id).className = "participant";
-  } 
+  }
 
+  // fonction éxécutée lorsque l'utilisateur ferme la page de messages privés
   function fermerMp(id) {
     document.getElementById("Mp" + id).style.right = "-100%";
     document.getElementById("Mp" + id).style.opacity = "0";
@@ -562,101 +608,145 @@ let premierMessageId = -555;
     document.getElementById("infos").style.display = "block";
     document.getElementById("infos").style.left = "0%";
     document.getElementById("infos").style.opacity = "1";
+    // à la fin de la transition, on fait disparaître la page de messages privés
     const transition = document.getElementById("Mp" + MpEnCours);
-    transition.addEventListener('transitionend', () => {
+    transition.addEventListener("transitionend", () => {
       document.getElementById("Mp" + id).style.display = "none";
     });
+    // comme il n'y a plus de page de messages privés ouverte, on "reset" la variable
     MpEnCours = "none";
-    nomMpEnCours = -1;
   }
 
-  window.onload = function() {
-    document.getElementById("inputMp").focus()
-    //when form is submitted, capture the input value and then send it to server
+  window.onload = function () {
+    document.getElementById("inputMp").focus();
+    // lorsque le form est "submitted", on prend la valeur de l'input de texte s'il y en a une, et on envoie au serveur un web socket avec dedans le contenu du message, et l'identifiant du destinataire
     document
-    .getElementById("envoiMp")
-    .addEventListener("submit", function (event) {
-      if (document.getElementById("inputMp").value) {
-      event.preventDefault();
-      if(MpEnCours !== "none") {
-        console.log('Mp envoyé !', MpEnCours);
-        socket.emit("Mp", {"content": (document.getElementById("inputMp").value), "recipient": MpEnCours});
-        if (!(document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.className == "myMp"))) {
-          const li = document.createElement("li");
-          const p = document.createElement("p");
-          p.textContent = document.getElementById("inputMp").value;
-          const h4 = document.createElement("h4");
-          h4.textContent = myName;
-          li.appendChild(h4);
-          li.appendChild(p);
-          li.className = "myMp";
-          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].appendChild(li);
+      .getElementById("envoiMp")
+      .addEventListener("submit", function (event) {
+        if (document.getElementById("inputMp").value) {
+          event.preventDefault();
+          if (MpEnCours !== "none") {
+            console.log("Mp envoyé !", MpEnCours);
+            socket.emit("Mp", {
+              content: document.getElementById("inputMp").value,
+              recipient: MpEnCours,
+            });
+            // si il n'y a pas de message dans la cnversation, ou si le dernier message n'est pas le mien
+            if (
+              !(
+                document
+                  .getElementById("Mp" + MpEnCours)
+                  .getElementsByTagName("ul")[0].lastElementChild &&
+                document
+                  .getElementById("Mp" + MpEnCours)
+                  .getElementsByTagName("ul")[0].lastElementChild.className ==
+                  "myMp"
+              )
+            ) {
+              // on affiche le message comme un nouveau message
+              const li = document.createElement("li");
+              const p = document.createElement("p");
+              p.textContent = document.getElementById("inputMp").value;
+              const h4 = document.createElement("h4");
+              h4.textContent = myName;
+              li.appendChild(h4);
+              li.appendChild(p);
+              li.className = "myMp";
+              document
+                .getElementById("Mp" + MpEnCours)
+                .getElementsByTagName("ul")[0]
+                .appendChild(li);
+            } else {
+              // sinon on ajoute le message à la suite du dernier message en revenant à la ligne
+              document
+                .getElementById("Mp" + MpEnCours)
+                .getElementsByTagName("ul")[0]
+                .lastElementChild.getElementsByTagName("p")[0].textContent +=
+                "\r\n" + document.getElementById("inputMp").value;
+            }
+            // on fait scroller tout en bas
+            var element = document
+              .getElementById("Mp" + MpEnCours)
+              .querySelector("ul");
+            element.scrollTo(0, element.scrollHeight);
+            // on vide l'input de texte
+            document.getElementById("inputMp").value = "";
+            event.preventDefault();
+          } else {
+            console.log("pas de Mp ouvert !");
+            event.preventDefault();
+          }
         } else {
-          document.getElementById("Mp" + MpEnCours).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].textContent += '\r\n' + document.getElementById("inputMp").value;
+          event.preventDefault();
         }
-        var element = document.getElementById("Mp" + MpEnCours).querySelector("ul");
-        element.scrollTo(0, element.scrollHeight);
-        document.getElementById("inputMp").value = "";
-        event.preventDefault();
-      } else {
-        console.log("pas de Mp ouvert !");
-        event.preventDefault();
-      }
-    } else {
-      event.preventDefault();
-    }
-  });
+      });
 
-    document.getElementById("m").focus()
-    //when form is submitted, capture the input value and then send it to server
+    document.getElementById("m").focus();
+    // lorsque le form est "submitted", on prend la valeur de l'input de texte s'il y en a une, et on envoie au serveur un web socket avec dedans le contenu du message, et l'identifiant du destinataire
     document
-    .getElementById("envoiMsg")
-    .addEventListener("submit", function (event) {
-    if (document.getElementById("m").value) {
-      event.preventDefault();
-      socket.emit("message", {"content": (document.getElementById("m").value)});
-      document.getElementById("m").value = "";
-    } else {
-      event.preventDefault();
-    }
-  });
-  }  
+      .getElementById("envoiMsg")
+      .addEventListener("submit", function (event) {
+        if (document.getElementById("m").value) {
+          event.preventDefault();
+          socket.emit("message", {
+            content: document.getElementById("m").value,
+          });
+          document.getElementById("m").value = "";
+        } else {
+          event.preventDefault();
+        }
+      });
+  };
 
+  // lorsque l'on reçoit la liste des utilisateurs, on appelle la fonction updateUserslist pour l'afficher
   socket.on("userslist", (users) => {
     console.log("userslist :", users);
     updateUserslist(users);
   });
 
+  // lorsque l'on reçoit le web socket du serveur indiquant qu'un nouvel utilisateur s'est connecté, on l'affiche dans la liste des participants
   socket.on("new user", (user) => {
-    console.log('a new user entered the chat');
+    console.log("a new user entered the chat");
     let participant = document.createElement("li");
-      participant.className = "participant";
-      participant.id = user.id;
-      if (user.name != myName) {
-        participant.setAttribute('onclick','ouvrirMp("' + user.id + '", "' + user.name + '")');
+    participant.className = "participant";
+    participant.id = user.id;
+    if (user.name != myName) {
+      // on ajoute l'attribut "onclick" pour permettre d'ouvrir la page de messages privés correspondante
+      participant.setAttribute(
+        "onclick",
+        'ouvrirMp("' + user.id + '", "' + user.name + '")'
+      );
+    }
+    participant.textContent = user.name;
+    // si une page de messages privés avec cet utilisateur existe, on ajoute le nom de class au nom de l'utilisateur pour faire apparaître la vignette de notification de bouveaux messages s'il y en a
+    if (
+      document.getElementById("Mp" + user.id) &&
+      document.getElementById("Mp" + user.id).dataset.newMessages != 0
+    ) {
+      if (document.getElementById("Mp" + user.id).dataset.newMessages < 10) {
+        participant.className +=
+          " _" + document.getElementById("Mp" + user.id).dataset.newMessages;
+      } else {
+        participant.className += " _10";
       }
-      participant.textContent = user.name;
-      if (document.getElementById("Mp" + user.id) && document.getElementById("Mp" + user.id).dataset.newMessages != 0) {
-        if (document.getElementById("Mp" + user.id).dataset.newMessages < 10) {
-          participant.className += " _" + document.getElementById("Mp" + user.id).dataset.newMessages;
-        } else {
-          participant.className += " _10";
-        }
-      }
-      document.getElementById("participants").appendChild(participant);
-
+    }
+    document.getElementById("participants").appendChild(participant);
   });
 
+  // lorsque l'on reçoit le web socket du serveur indiquant qu'un utilisateur a quitté le chat, on le supprime de la liste des participants
+  // si l'utilisateur déconnecté est nous-même, alors on envoie une demande de reconnexion au serveur
   socket.on("user left", (user) => {
     if (user.id == myID) {
-      socket.emit("NewConnection")
-      console.log("demande de reconnection...")
+      socket.emit("NewConnection");
+      console.log("demande de reconnection...");
     }
     document.getElementById(user.id).remove();
-  })
+  });
 
-  socket.on('file link', (data) => {
-    console.log('new file', data)
+  // lorsque l'on reçoit le web socket d'un lien d'un fichier qui a été envoyé sur le chat
+  socket.on("file link", (data) => {
+    console.log("new file", data);
+    // si filetype == 2, alors le fichier envoyé est un fichier texte, on affiche donc un lien qui a pour nom le nom du fichier et qui envoye sur une page pour télécharger le fichier (voir chat.py)
     if (data.filetype == 2) {
       let authorClass = "";
       let divClass = "";
@@ -686,6 +776,7 @@ let premierMessageId = -555;
       div.appendChild(a);
       li.appendChild(div);
       document.getElementById("messages").appendChild(li);
+      // sinon, si filetype == 3, alors le fichier envoyé est une image, on affiche donc l'image dans une balise <img> dans une balise <a> pour la télécharger
     } else {
       let authorClass = "";
       let divClass = "";
@@ -696,7 +787,6 @@ let premierMessageId = -555;
         authorClass = "you";
         divClass = "yourDiv";
       }
-      console.log('1')
       const div = document.createElement("div");
       div.className = divClass;
       div.style.display = "flex";
@@ -719,25 +809,26 @@ let premierMessageId = -555;
       a.href = data.link;
       a.className = "image";
       let img = document.createElement("img");
+      // on demande l'image au serveur pour l'afficher (ça l'enregistre dans le cache du navigateur)
       img.src = "/static/chat/downloads/" + data.filename;
       div.appendChild(p);
-      a.appendChild(img)
+      a.appendChild(img);
       div.appendChild(a);
       li.appendChild(div);
       document.getElementById("messages").appendChild(li);
-      }
+    }
 
-    //scroll to the bottom
-    var element = document.getElementById("chat")
+    // on fait scroller jusqu'en bas
+    var element = document.getElementById("chat");
     element.scrollTo(0, element.scrollHeight);
   });
 
-  socket.on('message', function(data) {
+  // lorsque l'on reçoit le web socket du serveur d'un message classique envoyé sur le chat
+  socket.on("message", function (data) {
     console.log("message reçu : ", data);
     if (data.authorId == lastUserID) {
       concatenateMessage(data);
-    }
-    else {
+    } else {
       displayNewMessage(data);
     }
     lastUserID = data.authorId;
@@ -746,9 +837,11 @@ let premierMessageId = -555;
     }
   });
 
-  socket.on('Mp', function(data) {
-    console.log("Mp reçu : ", data)
-    if (!(document.getElementById("Mp" + data.userID))) {
+  // lorsque l'on reçoit le web socket du serveur indiquant qu'un message privé nous a été envoyé
+  socket.on("Mp", function (data) {
+    console.log("Mp reçu : ", data);
+    // si la page de messages privés correspondant à l'auteur du message n'existe pas, on la crée
+    if (!document.getElementById("Mp" + data.userID)) {
       parent = document.getElementById("Mps");
       const div = document.createElement("div");
       div.className = "Mps";
@@ -757,12 +850,22 @@ let premierMessageId = -555;
       const ul = document.createElement("ul");
       const h1 = document.createElement("h1");
       h1.textContent = "<-- " + data.user;
-      h1.setAttribute('onclick','fermerMp("'+data.userID+'")');
+      h1.setAttribute("onclick", 'fermerMp("' + data.userID + '")');
       div.appendChild(h1);
       div.appendChild(ul);
       parent.appendChild(div);
     }
-    if (!(document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild && (document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.className == "yourMp"))) {
+    // si il n'y a pas de message dans la conversation, ou si le dernier message a été écrit par l'autre personne, on affiche le message comme un nouveau message
+    if (
+      !(
+        document
+          .getElementById("Mp" + data.userID)
+          .getElementsByTagName("ul")[0].lastElementChild &&
+        document
+          .getElementById("Mp" + data.userID)
+          .getElementsByTagName("ul")[0].lastElementChild.className == "yourMp"
+      )
+    ) {
       const li = document.createElement("li");
       const p = document.createElement("p");
       p.textContent = data.content;
@@ -771,19 +874,34 @@ let premierMessageId = -555;
       li.appendChild(h4);
       li.appendChild(p);
       li.className = "yourMp";
-      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].appendChild(li);
+      document
+        .getElementById("Mp" + data.userID)
+        .getElementsByTagName("ul")[0]
+        .appendChild(li);
+      // sinon, on affiche le contenu du message à la suite du dernier, en revenant à la ligne
     } else {
-      document.getElementById("Mp" + data.userID).getElementsByTagName("ul")[0].lastElementChild.getElementsByTagName("p")[0].textContent += '\r\n' + data.content;
+      document
+        .getElementById("Mp" + data.userID)
+        .getElementsByTagName("ul")[0]
+        .lastElementChild.getElementsByTagName("p")[0].textContent +=
+        "\r\n" + data.content;
     }
+    // si la page de messages privés correspondante n'est pas ouverte, on incrémente la variable html de 1, et on affiche la vignette de notification correspondante en modifiant la class de l'élément
     if (MpEnCours != data.userID) {
-      let newMessages = parseInt(document.getElementById("Mp" + data.userID).dataset.newMessages) + 1
-      document.getElementById("Mp" + data.userID).dataset.newMessages = newMessages
+      let newMessages =
+        parseInt(
+          document.getElementById("Mp" + data.userID).dataset.newMessages
+        ) + 1;
+      document.getElementById("Mp" + data.userID).dataset.newMessages =
+        newMessages;
       if (newMessages < 11) {
-        document.getElementById(data.userID).className = "participant _" + newMessages;
+        document.getElementById(data.userID).className =
+          "participant _" + newMessages;
       }
     }
   });
 
+  // fonction qui affiche le contenu d'un message de chat dans un nouveau message
   function displayNewMessage(data) {
     let authorClass = "";
     let divClass = "";
@@ -812,53 +930,86 @@ let premierMessageId = -555;
     div.appendChild(p2);
     li.appendChild(div);
     document.getElementById("messages").appendChild(li);
-    //scroll to the bottom
-    var element = document.getElementById("chat")
-    console.log('je teste si onest tt en bas', Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight)
-    if (Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight < 100) {
+    var element = document.getElementById("chat");
+    console.log(
+      "je teste si onest tt en bas",
+      Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight
+    );
+    // si l'utilisateur est proche du bas de chat, on le fait scroller jusqu'en bas. Sinon on ne fait rien
+    // c'est pour si jamais on est en train de consulter l'historique et qu'un nouveau message arrive, on ne soit pas scroll jusqu'en bas
+    if (
+      Math.abs(element.scrollHeight - element.scrollTop) -
+        element.clientHeight <
+      100
+    ) {
       element.scrollTop = element.scrollHeight;
     }
   }
 
+  // fonction qui affiche un nouveau message du chat à la suite du dernier message, en revenant à la ligne
   function concatenateMessage(data) {
-    let message = document.getElementById("messages").lastElementChild.getElementsByClassName("message")[0];
+    let message = document
+      .getElementById("messages")
+      .lastElementChild.getElementsByClassName("message")[0];
     message.textContent += "\r\n" + data.content;
     var element = document.getElementById("chat");
-    console.log('je teste si onest tt en bas', Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight)
-    if (Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight < 50) {
+    console.log(
+      "je teste si onest tt en bas",
+      Math.abs(element.scrollHeight - element.scrollTop) - element.clientHeight
+    );
+    // si l'utilisateur est proche du bas de chat, on le fait scroller jusqu'en bas. Sinon on ne fait rien
+    // c'est pour si jamais on est en train de consulter l'historique et qu'un nouveau message arrive, on ne soit pas scroll jusqu'en bas
+    if (
+      Math.abs(element.scrollHeight - element.scrollTop) -
+        element.clientHeight <
+      50
+    ) {
       element.scrollTop = element.scrollHeight;
     }
-  }   
+  }
 
+  // fonction qui affiche la liste des participants lorsque l'on se connecte sur le chat
   function updateUserslist(list) {
     var parentId = "participants";
     var childName = "participant";
-    //Supprimme la liste déjà existante sur la page (marche)
-    var childNodesToRemove = document.getElementById(parentId).getElementsByClassName(childName);
-    for(var i=childNodesToRemove.length-1;i >= 0;i--){
-        var childNode = childNodesToRemove[i];
-        childNode.parentNode.removeChild(childNode);
+    // Supprimme la liste déjà existante sur la page
+    var childNodesToRemove = document
+      .getElementById(parentId)
+      .getElementsByClassName(childName);
+    for (var i = childNodesToRemove.length - 1; i >= 0; i--) {
+      var childNode = childNodesToRemove[i];
+      childNode.parentNode.removeChild(childNode);
     }
-    for(var j=0; j < list.names.length; j++) {
+    // crée des "li" un à un, chaque li contenant le nom d'un participant
+    for (var j = 0; j < list.names.length; j++) {
       let participant = document.createElement("li");
       participant.className = "participant";
       participant.id = list.IDs[j];
       if (list.names[j] != myName) {
-        participant.setAttribute('onclick','ouvrirMp("'+list.IDs[j]+'", "'+list.names[j]+'")');
-
+        // on donne l'attribut onclick() pour lance la fonction ouvrirMp() lorsque l'on clique dessus
+        participant.setAttribute(
+          "onclick",
+          'ouvrirMp("' + list.IDs[j] + '", "' + list.names[j] + '")'
+        );
       } else {
         participant.className += " moi";
       }
       participant.textContent = list.names[j];
       document.getElementById("participants").appendChild(participant);
+    }
   }
-  }
-      
+
+  // fonction qui affiche 1 par 1 en partant du bas les messages d'historique qu'on lui donne en argument
   function afficherHistorique(messages) {
-    let position = document.getElementById("chat").scrollHeight - document.getElementById("chat").scrollTop
+    // on conserve la position pour pouvoir y revenir lorsque l'on aura affiché tous les messages d'historique reçus
+    let position =
+      document.getElementById("chat").scrollHeight -
+      document.getElementById("chat").scrollTop;
     for (let i = 0; i < messages.length; i++) {
+      // si le message est un message classique (chaîne de caractère et pas document)
       if (messages[i].messageId == 1) {
-        if (lastAuthorID!=messages[i].authorId || lastAuthorID==-555) {
+        // si le dernier message d'historique affiché n'est pas de moi, ou si il n'y en a pas, on affiche le contenu du message dans un nouveau message
+        if (lastAuthorID != messages[i].authorId || lastAuthorID == -555) {
           let authorClass = "";
           let divClass = "";
           if (messages[i].authorId == myID) {
@@ -885,14 +1036,21 @@ let premierMessageId = -555;
           div.appendChild(p1);
           div.appendChild(p2);
           li.appendChild(div);
-          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+          document
+            .getElementById("historique")
+            .insertBefore(li, document.getElementById("historique").firstChild);
+          // sinon, si le dernier message d'historique affiché est le mien, on ajoute le contenu au dessus du message, en revenant à la ligne après
         } else {
-          let message = document.getElementById("historique").firstElementChild.getElementsByClassName("message")[0];
+          let message = document
+            .getElementById("historique")
+            .firstElementChild.getElementsByClassName("message")[0];
           let content = message.textContent;
-          message.textContent = messages[i].content + '\r\n' + content;
+          message.textContent = messages[i].content + "\r\n" + content;
         }
         lastAuthorID = messages[i].authorId;
+        // sinon, le message d'historique est un fichier
       } else {
+        // si c'est une image, alors on l'affiche dans une balise <img> dans une balise <a> qui renvoie vers une page pour la télécharger (voir chat.py)
         if (messages[i].messageId == 3) {
           let authorClass = "";
           let divClass = "";
@@ -928,11 +1086,16 @@ let premierMessageId = -555;
           let img = document.createElement("img");
           img.src = "/static/chat/downloads/" + messages[i].content;
           div.appendChild(p);
-          a.appendChild(img)
+          a.appendChild(img);
           div.appendChild(a);
           li.appendChild(div);
-          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+          // on fait comme si il n'y avait pas d'autre message avec la variable lastAuthorID pour pas que d'autre messages vient se concaténer à l'image
+          document
+            .getElementById("historique")
+            .insertBefore(li, document.getElementById("historique").firstChild);
           lastAuthorID = -555;
+          // sinon, alors le fichier envoyé est un fichier texte (en tout cas autre que image)
+          // on affiche donc un lien qui a pour nom le nom du fichier, et qui renvoie sur une page pour le télécharger (voir chat.py)
         } else {
           let authorClass = "";
           let divClass = "";
@@ -943,7 +1106,7 @@ let premierMessageId = -555;
             authorClass = "you";
             divClass = "yourDiv";
           }
-          
+
           const div = document.createElement("div");
           div.className = divClass;
           const li = document.createElement("li");
@@ -961,20 +1124,27 @@ let premierMessageId = -555;
           div.appendChild(p);
           div.appendChild(a);
           li.appendChild(div);
-          document.getElementById("historique").insertBefore(li,document.getElementById("historique").firstChild)
+          // on fait comme si il n'y avait pas d'autre message avec la variable lastAuthorID pour pas que d'autre messages vient se concaténer au lien
+          document
+            .getElementById("historique")
+            .insertBefore(li, document.getElementById("historique").firstChild);
           lastAuthorID = -555;
         }
       }
+      // on fait apparaître la zone d'historique (si elle est déjà visible ça change rien)
       document.getElementById("historique").style.display = "block";
+      // on modifie la variable qui stocke l'identifiant du message d'historique le plus vieux que l'on a d'affiché
+      // cela permet de savoir à partir de quel message il faut demander à la base de données
       premierMessageId = messages[i].id;
     }
-    document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight - position;
+    // on fait scroll à la même distance du bas que l'utilisateur était avant
+    document.getElementById("chat").scrollTop =
+      document.getElementById("chat").scrollHeight - position;
   }
 
-
+  // lorsque l'on reçoit le web socket du serveur qui nous renvoie les messages d'historique demandés, on lance la fonction pour les afficher
   socket.on("historique", (messages) => {
-      afficherHistorique(messages);
+    afficherHistorique(messages);
   });
-
 </script>
 {% endblock %}

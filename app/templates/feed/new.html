@@ -16,7 +16,26 @@
         </div>
     </div>
 
-    <button class="button is-block is-info is-large is-fullwidth">Créer</button>
+    <button class="button is-block is-info is-large">Créer</button>
 </form>
 
+{% endblock %}
+{% block styles %}
+<style>
+    form {
+        margin-top: 10%;
+    }
+    .field {
+        width: 50%;
+        margin-left: 25%;
+    }
+    .input {
+        border-radius: 100px;
+    }
+    .button {
+        width: 20%;
+        margin-left: 40%;
+        border-radius: 50px;
+    }
+</style>
 {% endblock %}

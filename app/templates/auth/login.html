@@ -1,36 +1,52 @@
+<! -- on "appelle" base.html, auquel va venir se greffer l'html et le css de cette page -->
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+{% endblock %}
+
+<! -- on place les balises html de la page dans un block -->
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    <div class="box">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}
-            </div>
-        {% endif %}
-        {% endwith %}
-        <form method="POST" action="/login">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
-            </div>
+  <h3 class="title">Login</h3>
+  <div class="box">
+    <! -- Espace pour afficher les messages d'erreur -->
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="notification is-danger">{{ messages[0] }}</div>
+    {% endif %} {% endwith %}
+    <form method="POST" action="/login">
+      <div class="field">
+        <div class="control">
+          <input
+            class="input is-large"
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            autofocus=""
+          />
+        </div>
+      </div>
 
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
-            </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Remember me
-                </label>
-            </div>
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
-        </form>
-    </div>
+      <div class="field">
+        <div class="control">
+          <input
+            class="input is-large"
+            type="password"
+            name="password"
+            placeholder="Your Password"
+          />
+        </div>
+      </div>
+      <div class="field">
+        <label class="checkbox">
+          <input type="checkbox" />
+          Remember me
+        </label>
+      </div>
+      <button class="button is-block is-info is-large is-fullwidth">
+        Login
+      </button>
+    </form>
+  </div>
 </div>
 {% endblock %}

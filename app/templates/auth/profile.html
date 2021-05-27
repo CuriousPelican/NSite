@@ -1,56 +1,193 @@
+<! -- on "appelle" base.html, auquel va venir se greffer l'html et le css de cette page -->
 {% extends "base.html" %}
 
+<! -- on place les balise html de la page dans un block -->
 {% block content %}
-<h1 class="title"> Welcome, {{ name }} !</h1>
+<h1 class="title" style="font-size: 3rem;"> Bienvenue à toi, ô noble {{ name }} !</h1> <! -- on récupère la variable du nom, envoyée avec le fichier -->
+<div id="barre_vertical"> </div>
 
-<div class="box">
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div class="notification is-danger">
-        {{ messages[0] }}
-    </div>
-{% endif %}
-{% endwith %}
 
-<h3 class="title">GooOOoOoar changer de grooor nom</h3>
-<form method="POST" action="#">
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" value="nouveau nom" name="new_name" placeholder="Your new name" autofocus="">
+<div id="conteneur">
+    <div class="box">
+        <! -- Espace pour afficher les messages d'erreur -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div id="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+
+        <div class="deroulant">
+            <input id="nom" type="checkbox" name="Changer de nom +"/>
+            <label for="nom">Changer de nom <div class="croix"><span></span></div></label>
+            
+            
+            <form method="POST" action="#" >
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" value="" name="new_name" placeholder="nouveau nom" autofocus="">
+                    </div>
+                </div>
+                <input type="submit" value="Confirmer" name="change_name" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+            </form>
+        </div>
+
+        <div class="deroulant">
+            <input id="email" type="checkbox" name="Changer d'email +" />
+            <label for="email">Changer d'email <div class="croix"><span></span></div></label>
+            
+            <form method="POST" action="#">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" value="" name="new_email" placeholder="nouvel email" autofocus="">
+                </div>
+            </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="password" value="" name="password" placeholder="mot de passe" autofocus="">
+                    </div>
+                </div>
+                <input type="submit" value="Confirmer" name="change_email" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+            </form>
+        </div>
+
+        <div class="deroulant">
+            <input id="mdp" type="checkbox" name="Changer de mot de passe +" />
+            <label for="mdp">Changer de mot de passe <div class="croix"><span></span></div></label>
+            
+            <form method="POST" action="#">
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="password" value="" name="old_password" placeholder="ancien mot de passe" autofocus="">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="password" value="" name="new_password" placeholder="nouveau mot de passe" autofocus="">
+                    </div>
+                </div>
+                <input type="submit" value="Confirmer" name="change_pass" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
+            </form>
+            </div>
         </div>
     </div>
-    <input type="submit" value="Confirmer" name="change_name" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
-</form>
 
-<h3 class="title">GooOOoOoar changer grooor d'email</h3>
-<form method="POST" action="#">
-  <div class="field">
-    <div class="control">
-        <input class="input is-large" type="text" value="nouvel email" name="new_email" placeholder="Your new email" autofocus="">
-    </div>
 </div>
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" value="mot de passe" name="password" placeholder="password" autofocus="">
-        </div>
-    </div>
-    <input type="submit" value="Confirmer" name="change_email" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
-</form>
+{% endblock %} 
+<!-- on place le style dans un autre bloc -->
+{% block styles %}
+<style> 
+.box {
+    background-color: #00f29d;
+}
+html {
+    background-color: #1C2124;
+}
+.title {
+    color: white;
+}
+#barre_verticale {
+    margin-left: 10%;
+    float: left;
+    height: 90%;
+    width: 2px;
+    background-color: white;
+    border-radius: 2px;
+}
+input, .deroulant > form{
+    display: none;
+}
+input:checked~form {
+    display: block;
+    animation: dropdown 500ms;
+}
+input:checked ~ label .croix span::after {
+    transform: rotate(270deg);
+}
+input:checked ~ label .croix span {
+    transform: rotate(-180deg);
+}
+#conteneur {
+    float: right;
+    width: 80%;
+    margin-right: 5%;}
+label{
+    color: #363636;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.125;
+    display: block;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+h1 {
+    margin: 5%;
+ }
+.croix {
+    position: relative; 
+    width: 22px;
+    height: 22px; 
+    float: right;
+}
+.croix span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: block;
+    width: 22px;
+    height: 4px;
+    background-color: #363636;
+    transition: 0.5s;
+}
+.croix span::after {
+    content: '';
+    position: absolute;
+    top: -200%;
+    left: 40%;
+    display: block;
+    width: 4px;
+    height: 22px;
+    background-color: #363636;
+    transition: 0.5s;
+}
 
-<h3 class="title">GooOOoOoar changer grooor de mot grompf de passe</h3>
-<form method="POST" action="#">
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" value="ancien mot de passe" name="old_password" placeholder="Your old password" autofocus="">
-        </div>
-    </div>
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" value="nouveau mot de passe" name="new_password" placeholder="Your new password" autofocus="">
-        </div>
-    </div>
-    <input type="submit" value="Confirmer" name="change_pass" class="button is-block is-info is-large is-fullwidth" style="background-color: aqua;">
-</form>
+.button {
+    background: linear-gradient(45deg, rgba(235,117,35,1) 0%, rgba(168,4,43,1) 100%);
+    background-size: 250% 250%;
+    animation: fond 2s ease infinite;
+    color: white;
+    animation: colortexte 3s ease infinite alternate;
+}
 
-</div>
+@keyframes colortexte { /*animation de couleur pour le texte*/
+    0%{color:#e2d348}
+    30%{color: white}
+    100%{color: white}
+}
+
+@keyframes fond { /*animation de couleur pour le fond*/
+    0%{background-position:0% 50%}
+    50%{background-position:50% 100%}
+    100%{background-position:0% 50%}
+}
+
+ @keyframes dropdown { /*animation pour la fenêtre qui s'ouvre*/
+    0% {transform: scaleY(0)}
+    40% {transform: scaleY(1.2)}
+    60% {transform: scaleY(0.9)}
+    80% {transform: scaleY(1.1)}
+    100% {transform: scaleY(1)}
+}
+@media only screen and (max-width: 600px) { /*pour les petits écrans*/
+    #barre_verticale {
+      display: none;
+    }
+    #conteneur {
+        width: 100%;
+        margin-right: 0%;
+    }
+  }
+</style>
 {% endblock %}

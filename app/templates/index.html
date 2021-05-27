@@ -1,16 +1,17 @@
+<! -- on "appelle" base.html, auquel va venir se greffer l'html et le css de cette page -->
 {% extends "base.html" %}
 
+<! -- on place les balise html de la page dans un block -->
 {% block content %}
 <div id="content">
-<h1 class="title">
-  Flask Login Example
-</h1>
-<h2 class="subtitle">
-  Easy authentication and authorization in Flask.
-</h2>
+  <h1 class="title">NSite</h1>
+  <h2 class="subtitle">
+    UN PROJET PAR ALIX SURUN, BENJAMIN GALLAY & JOSHUA FAURE
+  </h2>
 </div>
 {% endblock %}
 
+<! -- on place le style dans un autre bloc -->
 {% block styles %}
 <style>
   #content {
@@ -20,17 +21,18 @@
   }
   .title {
     color: white;
+    font-size: 8em;
     width: 30%;
     margin: 0 auto;
     position: relative;
-    top: 7em;
+    top: 30%;
     text-align: center;
   }
   .subtitle {
     position: relative;
-    top: 10em;
+    top: 30%;
     color: white;
-    width: 40%;
+    width: 60%;
     margin: 0 auto;
     text-align: center;
   }

@@ -1,98 +1,117 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     {% block head %}
     {% endblock %}
-</head>
+    <title>NSite</title>
+  </head>
 
-<body>
+  <body>
     <div id="navbar">
-        <a class="navbar-item"  href="{{ url_for('main.index') }}"><p>
-            Home
-        </p></a>
-        {% if current_user.is_authenticated %}
-        <a class="navbar-item" href="{{ url_for('auth.profile') }}"><p>
-            Profile
-        </p></a>
-        {% endif %}
-        {% if not current_user.is_authenticated %}
-        <a class="navbar-item" href="{{ url_for('auth.login') }}"><p>
-            Login
-        </p></a>
-        <a class="navbar-item" href="{{ url_for('auth.signup') }}"><p>
-            Sign Up
-        </p></a>
-        {% endif %}
-        {% if current_user.is_authenticated %}
-        <a class="navbar-item" href="{{ url_for('auth.logout') }}"><p>
-            Logout
-        </p></a>
-        {% endif %}
-        {% if current_user.is_authenticated %}
-        <a class="navbar-item" href="{{ url_for('chat.index')}}"><p>
-            Chat
-        </p></a>
-        {% endif %}
+      <a class="navbar-item" href="{{ url_for('main.index') }}"
+        ><p>Accueil</p></a
+      >
+      {% if current_user.is_authenticated %}
+      <! -- n'apparaît que si l'utilisateur auquel on envoie la page est authentifié -->
+      <a class="navbar-item" href="{{ url_for('auth.profile') }}"
+        ><p>Profile</p></a
+      >
+      {% endif %} {% if not current_user.is_authenticated %}
+      <a class="navbar-item" href="{{ url_for('auth.login') }}"
+        ><p>Se connecter</p></a
+      >
+      <a class="navbar-item" href="{{ url_for('auth.signup') }}"
+        ><p>Créer un compte</p></a
+      >
+      {% endif %} {% if current_user.is_authenticated %}
+      <a class="navbar-item" href="{{ url_for('auth.logout') }}"
+        ><p>Déconnexion</p></a
+      >
+      {% endif %} {% if current_user.is_authenticated %}
+      <a class="navbar-item" href="{{ url_for('chat.index')}}"><p>Chat</p></a>
+      {% endif %} {% if current_user.is_authenticated %}
+      <a class="navbar-item" href="{{ url_for('feed.dash')}}"
+        ><p>Feedback</p></a
+      >
+      {% endif %}
     </div>
-    <div id="contenu">
-        {% block content %}
-        {% endblock %}
-    </div>
-</body>
-
+    <div id="contenu">{% block content %} {% endblock %}</div>
+  </body>
 </html>
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        /* overflow-y: hidden; */
-        background-color: #1C2124;
-        color: white;
+  body {
+    margin: 0;
+    height: 100vh;
+    background-color: #1c2124;
+    color: white;
+    background: linear-gradient(180deg, #181c1f, #24292c);
+    background-size: 250% 250%;
+    animation: fond 5s ease infinite alternate; /*pour ajouter une légère animation au fond*/
+  }
+  #navbar {
+    width: 100%;
+    margin: 0;
+    padding-right: 7%;
+    height: 10%;
+    display: flex;
+    flex-direction: row-reverse; /*pour que les éléments de la navbar s'alignent à droite*/
+    background-color: #1c2124;
+    border-bottom: 0.5px solid white;
+  }
+  .navbar-item {
+    height: 100%;
+    min-width: 1em;
+    padding: 0em 2em;
+    margin: 0 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background-color: #1c2124;
+    transition: all 0.5s ease; /*on anime le changement de couleur lorsque l'on survole l'objet*/
+  }
+  #navbar > a:nth-of-type(3) {
+    /* cible le troisième élément de la navbar à partir de la droite */
+    margin-left: auto;
+  }
+  #navbar > a:nth-of-type(5) {
+    /*cible le cinquième élément de la navbar à partir de la droite (s'il existe) */
+    margin-left: auto;
+  }
+  .navbar-item:hover {
+    background-color: #1c2124;
+  }
+  .navbar-item > p {
+    flex: 0 0 0;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+    height: 1.2em;
+    min-width: 100%;
+    text-align: center;
+    font-weight: 500;
+  }
+  .navbar-item:hover > p {
+    color: black;
+  }
+  #contenu {
+    width: 100%;
+    height: 90%;
+    top: 10%;
+    position: absolute;
+  }
+  /*pour donner une animation au fond noir*/
+  @keyframes fond {
+    0% {
+      background-position: 0% 50%;
     }
-    #navbar {
-        width: 93%;
-        margin: 0;
-        padding-right: 7%;
-        height: 10%;
-        display: flex;
-        flex-direction: row-reverse;
-        background-color: #1C2124;
-        border-bottom: .5px solid white;
+    50% {
+      background-position: 50% 100%;
     }
-    .navbar-item {
-        height: 100%;
-        min-width: 1em;
-        padding: 0em 2em;
-        margin: 0 1em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-decoration: none;
-        background-color: #1C2124;
-        transition: all .5s ease;
+    100% {
+      background-position: 0% 50%;
     }
-    .navbar-item:hover {
-        background-color: #1C2124;
-    }
-    .navbar-item > p {
-        flex: 0 0 0;
-        text-decoration: none;
-        color: white;
-        font-size: 1.2em;
-        height: 1.2em;
-        min-width: 100%;
-        text-align: center;
-        font-weight: 500;
-    }
-    #contenu {
-        width: 100%;
-        height: 88%;
-    }
+  }
 </style>
-{% block styles %}
-{% endblock %}
-
-{% block script %}
-{% endblock %}
+{% block styles %} {% endblock %} {% block script %} {% endblock %}

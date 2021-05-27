@@ -2,21 +2,107 @@
 
 {% block content %}
 
-<div>
-    <h1>Etes vous sur de vouloir supprimer {{"ce groupe" if group else "cette question"}} ?</h1>
-    <h1> Nom: {{group.name if group else feeditem.titre}} </h1>
-    <p> {{"Description:" if feeditem}} {{feeditem.desc if feeditem}} </p>
+<div class="ATTENTION">
+    <h1>Etes vous vraiment sur de vouloir supprimer {{"ce groupe" if group else "cette question"}} ? 
+        Et de confirmer votre volonté irrévocable d'assouvir votre désir destructeur en faisant 
+        disparaitre définitivement sans retour en arrière possible 
+        {{"le groupe" if group else "la question"}} <b>{{group.name if group else feeditem.titre}}</b> ?</h1>
+        <p class="muahahaa"><br>(sinon cherchez une demi heure pour trouver le bouton "non")</p>
+    <p> {{"Description:" if feeditem}} {{feeditem.desc if feeditem}} <br></p>
 
     <div>
         <form action="#" method="post">
-            <input type="submit" value="Non" name="n">
+            <input class="OUI" type="submit" value="OUI" name="y">
 
         </form>
-        <form action="#" method="post">
-            <input type="submit" value="Oui" name="y">
-
-        </form>
+         
     </div>
 </div>
+<div class="boite">
+    <form class="non" action="#" method="post">
+        <input  type="submit" value="Non" name="n">
 
+    </form> 
+</div>
+
+{% endblock %}
+{% block styles %}
+<style>
+    #contenu {
+        margin: 0;
+        perspective: 100px;
+    }
+    .boite {
+        background: linear-gradient(180deg, #313131,#1c2124);
+        width: 70%;
+        margin-left: 15%;
+        height: 500px;
+        transform-style: preserve-3d;
+        transform: rotateX(-5deg);
+        z-index: 1;
+        border-top: 2px solid rgb(201, 0, 0);
+    }
+    .ATTENTION {
+        height: 550px;
+        width: 70%;
+        margin-left: 15%;
+        padding: 5%;
+        border-radius: 20px;
+        border: 1px solid rgb(255, 0, 0);
+        font-size: 1.5em;
+        text-align: center;
+        background: linear-gradient(180deg, #242733,#2b2d3d);
+        transform-style: preserve-3d;
+        transform: rotateX(5deg);
+        z-index: 2;
+    }
+    .OUI {
+        background: radial-gradient(red, rgb(100, 0, 0));
+        background-size: 250% 250%;
+        animation: fond 5s ease infinite;
+        font-size: 5em;
+        padding: 20px;
+        border-radius: 50%;
+        color: #ffffff;
+        box-shadow: 0px 30px #222;
+        border: none;
+        cursor: pointer;
+    }
+    .OUI:active {
+        background: radial-gradient(rgb(219, 0, 0), rgb(50, 0, 0));
+        background-size: 250% 250%;
+        animation: fond 5s ease infinite;
+        box-shadow: 0 10px #222;
+        transform: translateY(20px);
+        color: #cfcfcf;
+        cursor: grabbing;
+    }
+    .OUI input {
+        box-shadow: 0 10px 5px black;
+    }
+    .non {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+    .non input {
+        font-size: 3px;
+        background-color: #242633;
+        border: none;
+        color: white;
+    }
+    .non input:hover { 
+        background-color: #197929;
+    }
+    .muahahaa {
+        font-size: 10px;
+    }
+    @keyframes fond { /*animation de couleur pour le fond*/
+        0%{background-position:0% 0%}
+        25%{background-position:0% 100%}
+        50%{background-position:100% 100%}
+        75%{background-position:100% 0%}
+        100%{background-position:0% 0%}
+    }
+</style>
 {% endblock %}

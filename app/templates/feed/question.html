@@ -6,42 +6,74 @@
 <p> {{ feeditem.desc }} </p>
 <p> {{ feeditem.creationdate }} </p>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div class="notification is-danger">
-        {{ messages[0] }}
-    </div>
-{% endif %}
-{% endwith %}
-
 <form method="POST" action="#">
+    <div class="conteneur">
+        <div class="groupelabel">
+            <label style="color: #F04747;">
+                <input type="radio" name="note" value="1">
+                1
+            </label>
+            <label style="color: #F4A39B;">
+                <input type="radio" name="note" value="2">
+                2
+            </label>
+            <label style="color: #EBEDE8;">
+                <input type="radio" name="note" value="3">
+                3
+            </label>
+            <label style="color: #9BD3B3;">
+                <input type="radio" name="note" value="4">
+                4
+            </label>
+            <label style="color: #3EA777;">
+                <input type="radio" name="note" value="5">
+                5
+            </label>
+        </div>
 
-    <div>
-        <label>
-            <input type="radio" name="note" value="1">
-            1
-        </label>
-        <label>
-            <input type="radio" name="note" value="2">
-            2
-        </label>
-        <label>
-            <input type="radio" name="note" value="3">
-            3
-        </label>
-        <label>
-            <input type="radio" name="note" value="4">
-            4
-        </label>
-        <label>
-            <input type="radio" name="note" value="5">
-            5
-        </label>
+        <textarea name="comment" placeholder="Eventuelles remarques" cols="200" rows="5"></textarea>
     </div>
-
-    <textarea name="comment" placeholder="Eventuelles remarques" cols="200" rows="5"></textarea>
-
-    <button class="button is-block is-info is-large is-fullwidth">Envoyer</button>
+    <button class="button is-block is-info is-large">Envoyer</button>
 </form>
 
+{% endblock %}
+{% block styles %}
+<style>
+    .conteneur {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    form {
+        margin: 10% 20%;
+        height: 38%;
+        /* border: 2px solid white; */
+        border-radius: 10px;
+        padding-top: 3%;
+        /* background-color: rgb(53, 54, 68); */
+    }
+    .groupelabel {
+        width: 10%;
+        margin-left: 8%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    label {
+        width: 100%;
+    }
+    textarea {
+        position: absolute;
+        width: 45%;
+        right: 25%;
+        height: 15%;
+        border-radius: 10px;
+        padding: 5px;
+    }
+    .button {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-top: 5%;
+        margin-left: 40%;
+        border-radius: 50px;
+    }
+</style>
 {% endblock %}
