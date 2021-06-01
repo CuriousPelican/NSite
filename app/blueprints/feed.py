@@ -236,8 +236,9 @@ def group(groupId):
 
             # 1er graphique            
             plt.figure() # on initialise une figure matplotlib
-            plt.scatter(x, medians, c="r") # on trace un nuage de points des médianes en fonction des questions
-            plt.plot(x, means, c="b") # pareil avec une courbe des moyennes
+            plt.scatter(x, medians, c="#F14668", label='Medianes') # on trace un nuage de points des médianes en fonction des questions
+            plt.plot(x, means, c="#00D1B2", label='Moyennes') # pareil avec une courbe des moyennes
+            plt.legend()
             plt.savefig("app"+url_for('static', filename=f"feed/graphs/{current_user.id}.{group.id}.meansmeds.svg")) # on enregistre la figure
             # on programme dans 30s la supression du fichier (largement sufisant pour qu'il soit envoyé au client) en appelant la fonction deletegraph
             T = th.Timer (30, deletegraph, args=[f"app/static/feed/graphs/{current_user.id}.{group.id}.meansmeds.svg"])
@@ -245,29 +246,32 @@ def group(groupId):
 
             # 2eme graphique
             plt.figure()
-            plt.plot(x, stdevs, c="y") # on trace une courbe des écarts types en fonction des questions
+            plt.plot(x, stdevs, c="#00D1B2", label='Ecarts types') # on trace une courbe des écarts types en fonction des questions
+            plt.legend()
             plt.savefig("app"+url_for('static', filename=f"feed/graphs/{current_user.id}.{group.id}.stdevs.svg"))
             T = th.Timer (30, deletegraph, args=[f"app/static/feed/graphs/{current_user.id}.{group.id}.stdevs.svg"])
             T.start()
 
             # 3eme graphique (le plus complexe)
             plt.figure()
-            plt.bar(x, norm1, color="#F04747") # on trace un histogramme de la proportion de 1 en fonction des questions
-            plt.bar(x, norm2, bottom=norm1, color="#F4A39B") # histogramme de la proportion de 2 en fonction des questions emplilé sur celui des 1
+            plt.bar(x, norm1, color="#F04747", label='1') # on trace un histogramme de la proportion de 1 en fonction des questions
+            plt.bar(x, norm2, bottom=norm1, color="#F4A39B", label='2') # histogramme de la proportion de 2 en fonction des questions emplilé sur celui des 1
             bottom = tuple(a+b for a,b in zip(norm1, norm2)) # on créé un tuple de la proportion des 1 + des 2 en fonction des questions pour pouvoir empiler l'histogramme des 3 dessus
-            plt.bar(x, norm3, bottom=bottom, color="#EBEDE8") # hist des 3
+            plt.bar(x, norm3, bottom=bottom, color="#EBEDE8", label='3') # hist des 3
             bottom2 = tuple(a+b for a,b in zip(bottom, norm3)) # tuple 1 + 2 + 3
-            plt.bar(x, norm4, bottom=bottom2, color="#9BD3B3") # hist des 4
+            plt.bar(x, norm4, bottom=bottom2, color="#9BD3B3", label='4') # hist des 4
             bottom3 = tuple(a+b for a,b in zip(bottom2, norm4)) # tuple 1 + 2 + 3 + 4
-            plt.bar(x, norm5, bottom=bottom3, color="#3EA777") # hist des 5
+            plt.bar(x, norm5, bottom=bottom3, color="#3EA777", label='5') # hist des 5
             plt.yticks([]) # on ne met pas de graduations sur l'axe des y (on veut juste une proportion visuelle)
+            plt.legend()
             plt.savefig("app"+url_for('static', filename=f"feed/graphs/{current_user.id}.{group.id}.histscumules.svg"))
             T = th.Timer (30, deletegraph, args=[f"app/static/feed/graphs/{current_user.id}.{group.id}.histscumules.svg"])
             T.start()
 
             # 4eme graphique
             plt.figure()
-            plt.bar(x, totaux, color="grey") # on trace un histogramme des nombres de réponses en fonction des questions
+            plt.bar(x, totaux, color="grey", label='Nombre de réponses') # on trace un histogramme des nombres de réponses en fonction des questions
+            plt.legend()
             plt.savefig("app"+url_for('static', filename=f"feed/graphs/{current_user.id}.{group.id}.effectifsreponses.svg"))
             T = th.Timer (30, deletegraph, args=[f"app/static/feed/graphs/{current_user.id}.{group.id}.effectifsreponses.svg"])
             T.start()

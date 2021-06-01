@@ -23,7 +23,7 @@ def signup():
 
 # route logout GET, déconnecte l'utilisateur et le renvoie sur la page principale
 @auth.route('/logout')
-@login_required # il faut ^tre connecté pour pouvoir accéder à cette page
+@login_required # il faut être connecté pour pouvoir accéder à cette page
 def logout():
     logout_user()
     return redirect(url_for('main.index'))

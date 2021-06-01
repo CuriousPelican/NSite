@@ -103,7 +103,10 @@ def removeUser():
 def renvoiMessage(data):
     # on regarde que est l'identifiant du dernier message dans la base donnée pour savoir quel sera l'identifiant de celui-ci
     m = Messages.query.order_by(Messages.id.desc()).first()
-    dernierId = m.id
+    if m = None:
+        dernierId = 0
+    else:
+        dernierId = m.id
     # on renvoie un web socket à tout le monde, avec les informations du message dedans
     socketio.emit("message", {"author": current_user.name, "authorId" : current_user.id, "content": data["content"], "id":dernierId + 1})
     # on enregistre le message dans la base de données

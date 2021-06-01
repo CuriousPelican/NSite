@@ -1,3 +1,7 @@
 venvNSite/
 *__pycache__/
 *.pyc
+test.py
+app/db.sqlite
+app/static/feed/graphs/*
+app/static/chat/downloads/*
