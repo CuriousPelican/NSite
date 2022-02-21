@@ -6,7 +6,11 @@ Projet de fin de 1ère en NSI - Serveur Flask avec 2 applications:
 - une appli de chat en temps réel avec SocketIO
 - et une de feedback, afin de faire des retours
 
-<br><br>
+<br>
+
+**Voir files & project organization pour mieux comprendre l'architecture du projet**
+
+<br>
 
 ## Installation & lancement (developpement):
 
